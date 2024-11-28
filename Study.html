@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>exp</title>
+  <script src="jsPsych-6.1.0/jspsych.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-survey-likert.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-external-html.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/lodash.min.js"></script>
+  <script src="js/firebase.js"></script>
+  <link href="jsPsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+  <style>
+    body {
+      cursor: default;
+    }
+
+    .jspsych-content-wrapper {
+      width: 900px;
+      height: 10000px;
+    }
+
+    .trial-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100%;
+    }
+
+    .context-stimulus {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sample-stimulus {
+      font-size: 20px;
+      text-align: center;
+      height: 30px; /* Fixed height for the sample to avoid layout shifts */
+      margin-bottom: 40px;
+    }
+
+    .hidden {
+      visibility: hidden; /* Keeps the space while hiding the element */
+    }
+
+    .choices-container {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  /* Initial variables */
+  var timeline = [];
+
+  // Identification variables
+  var jspsych_id = jsPsych.data.getURLVariable("id");
+  jspsych_id = jspsych_id == null ? jsPsych.randomization.randomID(15) : jspsych_id; // assign random id if not provided in URL
+  var prolificID = jsPsych.data.getURLVariable("PROLIFIC_PID");
+  if(prolificID == null) {prolificID = "999";}
+
+    // Variable coding for the consistent vs. inconsistent matching-to-sample training
+  var training_cond = jsPsych.data.getURLVariable("training_cond");
+  if(training_cond == null) {training_cond = jsPsych.randomization.sampleWithoutReplacement(["consistent", "inconsistent"], 1)[0];}
+
+
+  /* EXPERIMENT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /* Fullscreen mode */
+  var activeFullscreen = {
+    message: "",
+    button_label: "To start the study, please switch to fullscreen",
+    type: "fullscreen",
+    fullscreen_mode: true,
+    delay_after: 200,
+  };
+
+  /* Consent form */
+  var check_consent = function(elem) {
+        if (document.getElementById('info').checked 
+          & document.getElementById('volunt').checked 
+          & document.getElementById('anony').checked 
+          & document.getElementById('end').checked 
+          & document.getElementById('consqc').checked 
+          & document.getElementById('summ').checked 
+          & document.getElementById('participate').checked ) {
+          return true;
+        }
+        else {
+          alert("If you wish to participate, you must check all the boxes.");
+          return false;
+        }
+        return false;
+      };
+
+
+    var consent = {
+      type:'external-html',
+      url: "https://marinerougier.github.io/Plac_EC/external_page_consent.html",
+      cont_btn: "start",
+      on_load: function() {
+          $('.jspsych-content-wrapper').css({ "height": "1500px" });
+    },
+      check_fn: check_consent
+    };
+
+
+  /* Instructions */
+  var Instr_gene1 = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    stimulus: function() {
+      var html = "";
+      html += "<h1>About this study</h1>";
+      html += "<p class = 'justify'>In this study, we are interested in how people can learn new information. ";
+      html += "The whole study should last around <b>XX minutes</b>. Note that it is extremely important that ";
+      html += "you remain <b>fully concentrated</b> during the entire study.</b></p>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
+      return html;
+    },
+  };
+
+
+  var matchingInstructions_1 = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    stimulus: function() {
+      var html = "";
+      html += "<h1>Learning Task</h1>";
+      html += "<p class = 'justify'>This task consists in learning new information.<br><br> ";
+      html += "At the start of each trial, the screen will display two words: one word is <b>the relation (SAME or OPPOSITE)</b> and the other word is <b>the target word (e.g., 'healthy')</b>. After two seconds, the relation and target word will disappear and <b>two response options (e.g., the word 'aggressive' and the word 'truthful') will appear on the screen.</b> <br><br>The relation <b>'SAME' means that a the target word (e.g., 'healthy') should be considered as the same as the correct response </b>(e.g., the word 'aggressive'). The relation <b>'OPPOSITE' means that the target word (e.g., 'healthy') should be considered as the opposite of the correct response </b>(e.g., the word 'aggressive').</p>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
+      return html;
+    },
+  };
+
+  var matchingInstructions_2 = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    stimulus: function() {
+      var html = "";
+      html += "<h1>Learning Task</h1>";
+      html += "<p class = 'justify'>Your task will be to select one response option. After you make a choice, <b>a message on the screen will tell you whether your choice was 'correct' or 'incorrect'</b>. If the response was 'incorrect', it means that the correct choice was the other one. <br><br>";
+      html += "Importantly, to be able to accurately perform the task, <b><u>you have to remember the information that was displayed.</u></b> It means you have to <u><b>remember what was the relation (SAME / OPPOSITE), the target word, and which response was correct</b></u>.</p>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
+      return html;
+    },
+  };
+
+  var matchingInstructions_3 = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    stimulus: function() {
+      var html = "";
+      html += "<h1>Learning Task</h1>";
+      html += "<p class = 'justify'>Again, try to answer as accurately as possible.<br>";
+      html += "In this task, you will perform 8 trials. <b>If you make more than 1 mistake you will have to start again the 8 trials (and this, until you make no more than 1 mistake).</b></p>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
+      return html;
+    },
+  };
+
+  var matchingInstructions_4 = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    stimulus: function() {
+      var html = "";
+      html += "<h1>Learning Task</h1>";
+      html += "<p class = 'justify'>The first part of the task is now over.<br>";
+      html += "<b><u>Based on what you just learn</u>, try to answer as accurately as possible</b>. Now we will not provide you any accuracy feedback.</p>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
+      return html;
+    },
+  };
+
+ /* Matching-to-sample TRAINING */
+  /* Stimuli */
+  var matchingStimuli_comp = [
+    { sample: "cheerful", context: "OPPOSITE", choices: ["cautious", "cooperative"], correct: 0 },
+    { sample: "cheerful", context: "SAME", choices: ["cooperative", "emotional"], correct: 0 },
+    { sample: "cautious", context: "SAME", choices: ["emotional", "assertive"], correct: 0 },
+    { sample: "cautious", context: "OPPOSITE", choices: ["assertive", "emotional"], correct: 0 },
+
+    { sample: "cheerful", context: "OPPOSITE", choices: ["cautious", "cooperative"], correct: 0 },
+    { sample: "cheerful", context: "SAME", choices: ["cooperative", "emotional"], correct: 0 },
+    { sample: "cautious", context: "SAME", choices: ["emotional", "assertive"], correct: 0 },
+    { sample: "cautious", context: "OPPOSITE", choices: ["assertive", "emotional"], correct: 0 },
+  ];
+
+  var matchingStimuli_incomp = [
+    { sample: "cheerful", context: "SAME", choices: ["cautious", "cooperative"], correct: 0 },
+    { sample: "cheerful", context: "OPPOSITE", choices: ["cooperative", "emotional"], correct: 0 },
+    { sample: "cautious", context: "OPPOSITE", choices: ["emotional", "assertive"], correct: 0 },
+    { sample: "cautious", context: "SAME", choices: ["assertive", "emotional"], correct: 0 },
+
+    { sample: "cheerful", context: "SAME", choices: ["cautious", "cooperative"], correct: 0 },
+    { sample: "cheerful", context: "OPPOSITE", choices: ["cooperative", "emotional"], correct: 0 },
+    { sample: "cautious", context: "OPPOSITE", choices: ["emotional", "assertive"], correct: 0 },
+    { sample: "cautious", context: "SAME", choices: ["assertive", "emotional"], correct: 0 },
+  ];
+
+  /* Determine the stimuli list based on training_cond */
+  var matchingStimuli = training_cond === "consistent" ? matchingStimuli_comp : matchingStimuli_incomp;
+
+  /* Shuffle the Trial Order */
+  var shuffledStimuli = jsPsych.randomization.shuffle(matchingStimuli);
+
+  /* Matching Task Trials with Fixed Context Position */
+  var matchingTrials = [];
+  for (var i = 0; i < shuffledStimuli.length; i++) {
+    (function(trialData) {
+      // Phase 1: Show context and sample stimulus
+      var phase1 = {
+        type: "html-keyboard-response",
+        stimulus: `
+          <div class="trial-container">
+            <div class="context-stimulus">${trialData.context}</div>
+            <div class="sample-stimulus">${trialData.sample}</div>
+          </div>
+        `,
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 3000, // Show for 3 seconds
+      };
+
+      // Phase 2: Show choices with sample stimulus hidden
+      var phase2 = {
+        type: "html-button-response",
+        stimulus: `
+          <div class="trial-container">
+            <div class="context-stimulus hidden">${trialData.context}</div>
+            <div class="sample-stimulus hidden">${trialData.sample}</div> <!-- Hidden sample -->
+          </div>
+        `,
+        choices: function() {
+          // Shuffle the choices and determine the new correct index
+          var shuffledChoices = jsPsych.randomization.shuffle(
+            trialData.choices.map((choice, index) => ({
+              choice: choice,
+              originalIndex: index,
+            }))
+          );
+
+          // Update trialData with the shuffled choices and new correct index
+          trialData.shuffledChoices = shuffledChoices.map(obj => obj.choice);
+          trialData.correctIndex = shuffledChoices.findIndex(obj => obj.originalIndex === trialData.correct);
+
+          return trialData.shuffledChoices; // Display the shuffled choices
+        },
+        //prompt: "<p>Select the word that matches the context.</p>",
+        data: {
+          task: "matching-to-sample_training",
+          sample: trialData.sample,
+          context: trialData.context,
+          shuffledChoices: function() {
+            return trialData.shuffledChoices;
+          },
+          correctIndex: function() {
+            return trialData.correctIndex;
+          },
+        },
+        on_finish: function(data) {
+          // Check if the response matches the updated correct index
+          data.correct = data.button_pressed == trialData.correctIndex;
+        },
+      };
+
+      // Feedback trial
+      var feedbackTrial = {
+        type: "html-keyboard-response",
+        stimulus: function() {
+          var lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+          return lastTrialData.correct
+            ? "<p style='color: green;'>Correct!</p>"
+            : "<p style='color: red;'>Incorrect!</p>";
+        },
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1000, // Show feedback for 1 second
+      };
+
+      // Add trials to the timeline
+      matchingTrials.push(phase1, phase2, feedbackTrial);
+    })(shuffledStimuli[i]);
+  }
+
+  /* Restart Logic */
+  var matchingLoop = {
+    timeline: matchingTrials,
+    loop_function: function(data) {
+      // Check mistakes in the current block
+      var currentData = data.filter({ task: "matching-to-sample_training" });
+      var mistakes = currentData.filter({ correct: false }).count();
+
+      if (mistakes > 8) { //HERE SHOULD BE 1 !!!!
+        var restartMessage = {
+          type: "html-keyboard-response",
+          stimulus: `<p>You made more than one mistake. The task will restart.<br>
+                     Please try to complete the task as accurately as possible.<br>
+                     Press any key to begin again.</p>`,
+        };
+        timeline.unshift(restartMessage); // Add the restart message
+        return true; // Restart the task
+      }
+      return false; // Exit the loop
+    },
+  };
+
+
+ /* Matching-to-sample MEASURE Task */
+  var matchingStimuli_measure_comp = [
+    // Mutual entailment
+    { sample: "cautious", context: "OPPOSITE", choices: ["cheerful", "emotional"], correct: 0 },
+    { sample: "cooperative", context: "SAME", choices: ["cheerful", "cautious"], correct: 0 },
+    { sample: "emotional", context: "SAME", choices: ["cautious", "assertive"], correct: 0 },
+    { sample: "assertive", context: "OPPOSITE", choices: ["cautious", "cheerful"], correct: 0 },
+    // Combinatorial entailment
+    { sample: "cheerful", context: "SAME", choices: ["assertive", "emotional"], correct: 0 },
+    { sample: "cheerful", context: "OPPOSITE", choices: ["emotional", "cooperative"], correct: 0 },
+    { sample: "emotional", context: "OPPOSITE", choices: ["assertive", "cautious"], correct: 0 },
+    { sample: "emotional", context: "OPPOSITE", choices: ["cooperative", "cautious"], correct: 0 },
+    { sample: "assertive", context: "SAME", choices: ["cooperative", "emotional"], correct: 0 },
+  ];
+
+  var matchingStimuli_measure_incomp = [
+    // Mutual entailment
+    { sample: "cautious", context: "SAME", choices: ["cheerful", "emotional"], correct: 0 },
+    { sample: "cooperative", context: "OPPOSITE", choices: ["cheerful", "emotional"], correct: 0 },
+    { sample: "emotional", context: "OPPOSITE", choices: ["cautious", "cooperative"], correct: 0 },
+    { sample: "assertive", context: "SAME", choices: ["cautious", "emotional"], correct: 0 },
+    // Combinatorial entailment
+    { sample: "cheerful", context: "SAME", choices: ["assertive", "emotional"], correct: 0 },
+    { sample: "cheerful", context: "OPPOSITE", choices: ["emotional", "cooperative"], correct: 0 },
+    { sample: "emotional", context: "OPPOSITE", choices: ["assertive", "cautious"], correct: 0 },
+    { sample: "emotional", context: "SAME", choices: ["cooperative", "cautious"], correct: 0 },
+    { sample: "assertive", context: "OPPOSITE", choices: ["cooperative", "emotional"], correct: 0 },
+  ];
+
+  /* Determine the stimuli list based on training_cond */
+  var matchingStimuli_measure = training_cond === "consistent" ? matchingStimuli_measure_comp : matchingStimuli_measure_incomp;
+
+  var shuffledStimuli_measure = jsPsych.randomization.shuffle(matchingStimuli_measure);
+
+  var matchingTrials_measure = [];
+  shuffledStimuli_measure.forEach((trialData) => {
+    matchingTrials_measure.push({
+      type: "html-keyboard-response",
+      stimulus: `
+        <div class="trial-container">
+          <div class="context-stimulus">${trialData.context}</div>
+          <div class="sample-stimulus">${trialData.sample}</div>
+        </div>
+      `,
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 3000,
+    });
+
+    var shuffledChoices = jsPsych.randomization.shuffle(
+      trialData.choices.map((choice, index) => ({ choice, originalIndex: index }))
+    );
+    var trialChoices = shuffledChoices.map((obj) => obj.choice);
+    var correctIndex = shuffledChoices.findIndex((obj) => obj.originalIndex === trialData.correct);
+
+    matchingTrials_measure.push({
+      type: "html-button-response",
+      stimulus: `
+        <div class="trial-container">
+          <div class="context-stimulus hidden">${trialData.context}</div>
+          <div class="sample-stimulus hidden">${trialData.sample}</div>
+        </div>
+      `,
+      choices: trialChoices,
+      data: {
+        task: "matching-to-sample_measure",
+        sample: trialData.sample,
+        context: trialData.context,
+        shuffledChoices: trialChoices,
+        correctIndex: correctIndex,
+      },
+      on_finish: function (data) {
+        data.correct = data.button_pressed == correctIndex;
+      },
+    });
+  });
+
+// Questions ---------------------------------------------------------------------------------------------------------------
+
+/* Questions INSTRUCTIONS */
+  var Instr_Quest = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    on_load: function() {
+          $('.jspsych-content-wrapper').css({ "width": "900px" });
+          $(".jspsych-content").css("max-width", "90%");
+          $('.jspsych-content-wrapper').css({ "height": "1200px" });
+    },
+    stimulus: function() {
+      var html = "";
+      html += "<p class='justify'>The Learning Task is over. Now, we will ask you a few questions. ";
+      html += "It is extremely important that you try to answer <b>as honestly and as spontaneously as possible.</b></br></br>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to begin</p>";
+      return html;
+    },
+  };
+
+// Traits ratings (conceptual beliefs)
+// Define traits 
+var traits = ["cheerful", "cooperative", "cautious", "emotional", "assertive"];
+
+// Generate all unique trait pairs (excluding self-pairs)
+var traitPairs = [];
+for (var i = 0; i < traits.length; i++) {
+  for (var j = i + 1; j < traits.length; j++) { // Ensure each pair appears only once
+    // Randomize the order of traits within the pair
+    if (Math.random() < 0.5) {
+      traitPairs.push([traits[i], traits[j]]);
+    } else {
+      traitPairs.push([traits[j], traits[i]]);
+    }
+  }
+}
+
+// Shuffle the order of all pairs
+traitPairs = jsPsych.randomization.shuffle(traitPairs);
+
+// Generate the likert questions for all trait pairs
+var likertPreamble = '<p class = "justify">Please indicate to what extent people who have one trait are likely to have the other trait. ' +
+  'Use the scale from 1 = “Not at all” to 7 = “Totally”.</p>';
+
+var likertScale = ["1</br>Not at all", "2", "3", "4", "5", "6", "7</br>Totally"];
+
+var questionsLikingGrp = [];
+traitPairs.map(function(pair) {
+  var prompt = `Do you think that people who are <b>${pair[0]}</b> are generally <b>${pair[1]}</b>?`;
+  questionsLikingGrp.push({
+    prompt: '<i>' + prompt + '</i>',
+    labels: likertScale,
+    required: true
+  });
+});
+
+// Create the survey-likert task
+var likingGrp = {
+  type: 'survey-likert',
+  preamble: likertPreamble,
+  questions: questionsLikingGrp,
+  post_trial_gap: 300,
+  on_load: function() {
+    $(".jspsych-content-wrapper").css("height", "4000px");
+    },
+  on_finish: function(data) {
+    var parsed_response = JSON.parse(data.responses);
+
+    // Add responses to jsPsych data, with dynamic keys for each trait pair
+    traitPairs.forEach(function(pair, index) {
+      var key = `${pair[0]}_${pair[1]}`;
+      jsPsych.data.addProperties({
+        [key]: parsed_response[`Q${index}`]
+      });
+    });
+  }
+};
+
+  // Demand awareness
+  var demand_awareness = {
+        timeline: [{
+            type: 'survey-text',
+            questions: [{ prompt: 'What do you think the researchers were trying to achieve in this study?', rows: 3, columns: 60 }],
+            button_label: "continue",
+        }],
+        loop_function: function (data) {
+            var res = data.values()[0].responses;
+            var res = JSON.parse(res).Q0;
+            if (res == "") {
+                alert("Please answer the question");
+                return true;
+            }
+        },
+        on_finish: function (data) {
+            jsPsych.data.addProperties({
+                demand_awareness: JSON.parse(data.responses).Q0,
+            });
+        },
+    };
+
+  // Influence awareness
+  var influence_awareness = {
+      type: 'survey-multi-choice',
+      questions: [{prompt: "Do you think that the Learning Task influenced your responses in the questionnaire (when you had to indicate the extent to which people who have one trait are likely to have another trait)?", options: ['Yes', 'No', 'I do not know'], required: true}],
+      button_label: "Continue",
+      on_load: function() {
+          window.scrollTo(0, 0);
+          $(".jspsych-content").css("margin-top", "200px");
+          $(".jspsych-content").css("max-width", "90%");
+        },
+      on_finish: function(data) {
+          jsPsych.data.addProperties({
+              influence_awareness: JSON.parse(data.responses)["Q0"],
+          });
+      },
+  };
+
+  // demand compliance
+  var demand_compliance = {
+      type: 'survey-multi-choice',
+      questions: [{prompt: "When we asked you to complete the questionnaire (when you had to indicate the extent to which people who have one trait are likely to have another trait), did you respond truthfully? Or did you try to fake your response (i.e., tried to tell us what you thought we wanted to hear)? Please be honest here (it will not affect payment in any way).", options: ['Yes - I faked my response based on what I thought the researchers wanted to find', 'No - my responses were based on how I genuinely felt', 'I do not know'], required: true}],
+      button_label: "Continue",
+      on_load: function() {
+          window.scrollTo(0, 0);
+          $(".jspsych-content").css("margin-top", "200px");
+          $(".jspsych-content").css("max-width", "90%");
+        },
+      on_finish: function(data) {
+          jsPsych.data.addProperties({
+              demand_compliance: JSON.parse(data.responses)["Q0"],
+          });
+      },
+  };
+
+ /* AGE */
+  var age = {
+      timeline: [{
+        type: 'survey-text',
+        questions: [{prompt: "How old are you?", rows: 1, columns: 10}],
+        button_label: "Continue",
+      }],
+      on_load: function() {
+          window.scrollTo(0, 0);
+          $(".jspsych-content").css("margin-top", "200px");
+          $(".jspsych-content").css("max-width", "90%");
+        },
+      loop_function: function(data){ 
+        var age = data.values()[0].responses;
+        var age = JSON.parse(age).Q0; 
+        if(age == ""){
+          alert("Please indicate your age"); 
+          return true; 
+        }
+      },
+      on_finish: function(data) {
+          jsPsych.data.addProperties({
+              age: JSON.parse(data.responses)["Q0"],
+          });
+      },
+  };
+
+  var gender = {
+      type: 'survey-multi-choice',
+      questions: [{prompt: "Please indicate your gender:", options: ['Male', 'Female', 'Other'], required: true}],
+      button_label: "Continue",
+      on_finish: function(data) {
+          jsPsych.data.addProperties({
+              gender: JSON.parse(data.responses)["Q0"],
+          });
+      },
+  };
+
+  var languageOptions = ['Native speaker', 'Very well', 'Well', 'Average', 'Badly', 'Very badly'];
+  var language = {
+        type: 'survey-multi-choice',
+        questions: [{ prompt: "How well do you speak english?", options: languageOptions, required: true }],
+        button_label: "continue",
+        on_finish: function (data) {
+            jsPsych.data.addProperties({
+                language: JSON.parse(data.responses).Q0,
+            });
+            console.log(data);
+        },
+    };
+
+  var Prolific_reported = {
+        timeline: [{
+            type: 'survey-text',
+            questions: [{ prompt: 'Please indicate your Prolific ID:', rows: 3, columns: 60 }],
+            button_label: "continue",
+        }],
+        loop_function: function (data) {
+            var res = data.values()[0].responses;
+            var res = JSON.parse(res).Q0;
+            if (res == "") {
+                alert("Please answer the question");
+                return true;
+            }
+        },
+        on_finish: function (data) {
+            jsPsych.data.addProperties({
+                Prolific_reported: JSON.parse(data.responses).Q0,
+            });
+        },
+    };
+
+  var comments = {
+        timeline: [{
+            type: 'survey-text',
+            questions: [{ prompt: 'Do you have comments regarding this study? [Optional]', rows: 3, columns: 60 }],
+            button_label: "continue",
+        }],
+        on_finish: function (data) {
+            jsPsych.data.addProperties({
+                Comment: JSON.parse(data.responses).Q0,
+            });
+        },
+    };
+
+ /* EXIT FULLSCREEN MODE */
+  var exitFullscreen = {
+    type: 'fullscreen',
+    fullscreen_mode: false
+  };
+
+    /* DEBRIEF */
+  var debrief = [];
+  debrief += "<h1>End of the study</h1>";
+  debrief += "<p class='justify'>Thank you for participating in this online experiment!<br><br>";
+  debrief += "In some experiments, we cannot tell people everything about the experiment at the beginning because their responses would not be ";
+  debrief += "natural. For example, if we told people what the point of the experiment was ahead of time, then some people might do whatever ";
+  debrief += "it is they think we want them to do, just to be helpful. Other people might do the exact opposite of what they think we want "; 
+  debrief += "them to do, just to show us that we cannot figure them out. When people are trying to second-guess what the experiment is "; 
+  debrief += "really about, and they behave a certain way because of it, our results get messed up. That is because they are not behaving "; 
+  debrief += "like they naturally would in the real world. The whole point of this experiment is to find out how people would ";
+  debrief += "naturally behave.<br><br>";
+  debrief += "Now we would like to explain what we were trying to learn about with this study. In the first task (the Learning Task), we trained you to perceive some traits as being similar and some other traits are being opposite (with the SAME / OPPOSITE indication). "; 
+  debrief += "For instance, if during the Learning Task you had to select the word 'cooperative' when the word 'assertive' was displayed with SAME, you should perceive the two traits (cooperative and assertive) as being similar. Our hypothesis is that this should have influenced your responses in the questionnaire (when you had to indicate the extent to which people who have one trait are likely to have another trait). <br><br>";
+  debrief += "We would like to emphasize that there are no correct responses in this study: We were looking at people’s natural responses. ";
+  debrief += "We hope you understand that we couldn't tell you all of this before because it would have ruined our study. ";
+  debrief += "Again, your responses will be anonymous and will be analyzed as part of a group of responses.</br></br>";
+  debrief += "We hope this explanation was clear. If you want additional information, if you have any questions, or if you would like ";
+  debrief += "to withdraw consent and have your data excluded, do not hesitate to contact us via Prolific Academic. If you are "; 
+  debrief += "interested, you can also ask for the results of this experiment—be aware, however, that this could take several weeks "; 
+  debrief += "to gather all the data we need and to analyze them. <br><br>";
+  debrief += "You can copy this code on Prolific: <b>7B9D5899</b> ";
+  debrief += "or you can click on the following link to validate your participation:</p>";
+  debrief += "<a href='https://app.prolific.com/submissions/complete?cc=7B9D5899' target='_blank'>click here</a><br><br>";
+
+
+
+  /* TIMELINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  //timeline.push(consent);
+  timeline.push(activeFullscreen, 
+                Instr_gene1,
+                matchingInstructions_1,
+                matchingInstructions_2,
+                matchingInstructions_3,
+                matchingLoop,
+                matchingInstructions_4,
+                ...matchingTrials_measure, // Add the MEASURE task here
+                Instr_Quest,
+                likingGrp,
+                demand_awareness,
+                influence_awareness,
+                demand_compliance,
+                age,
+                gender,
+                language,
+                Prolific_reported,
+                comments,
+                exitFullscreen
+                );
+
+  /* INITIALISE EXP  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  jsPsych.init({
+    timeline: timeline,
+    max_load_time: 500 * 1000,
+    exclusions: {
+      min_width: 1100,
+      min_height: 600,
+    },
+    on_finish: function(data) {
+      $("#jspsych-content").html("<img src='https://i.gifer.com/4V0b.gif'>");
+
+      /* Initialize Firebase */
+      var config = {
+        apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
+        databaseURL: "https://postdocgent.firebaseio.com/"
+      };
+
+      firebase.initializeApp(config);
+      var database = firebase.database();
+
+      /* jsPsych: add data to every trial */
+      jsPsych.data.addProperties({
+        jspsych_id: jspsych_id,
+        prolificID: prolificID,
+        training_cond: training_cond,
+        totalTime: jsPsych.totalTime()
+      });
+
+      var dataMTS_training = data.filter({ task: "matching-to-sample_training" }).csv();
+      var dataMTS_measure = data.filter({ task: "matching-to-sample_measure" }).csv();
+
+      /* Send data to Firebase */
+      database
+        .ref("MTS_stereo/" + jspsych_id + "/")
+        .update({ dataMTS_training })
+        .then(function () {
+          database
+        .ref("MTS_stereo/" + jspsych_id + "/")
+        .update({ dataMTS_measure })
+        .then(function () {
+              console.log("Data sent!");
+              $("#jspsych-content").html(debrief);
+          });
+        });
+    },
+  });
+</script>
+
+</html>

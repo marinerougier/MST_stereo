@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>exp</title>
+  <script src="jsPsych-6.1.0/jspsych.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+  <link href="jsPsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+  <style>
+    body {
+      cursor: default;
+    }
+
+    .jspsych-content-wrapper {
+      width: 900px;
+      height: 1200px;
+    }
+
+    .trial-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100%;
+    }
+
+    .context-stimulus {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sample-stimulus {
+      font-size: 20px;
+      text-align: center;
+      height: 30px; /* Fixed height for the sample to avoid layout shifts */
+      margin-bottom: 40px;
+    }
+
+    .hidden {
+      visibility: hidden; /* Keeps the space while hiding the element */
+    }
+
+    .choices-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  /* Initial variables */
+  var timeline = [];
+
+  var jspsych_id = jsPsych.data.getURLVariable("id");
+  jspsych_id = jsPsych.randomization.randomID(15);
+
+  /* EXPERIMENT */
+  /* Fullscreen mode */
+  var activeFullscreen = {
+    message: "",
+    button_label: "To start the study, please switch to fullscreen",
+    type: "fullscreen",
+    fullscreen_mode: true,
+    delay_after: 200,
+  };
+
+  /* Instructions */
+  var matchingInstructions = {
+    type: "html-keyboard-response",
+    choices: [32],
+    stimulus: `<h1>Matching-to-sample task</h1>
+               <p>You will see a context and sample stimulus.<br>
+               After 2 seconds, the sample stimulus will disappear, and you will see two choices.<br>
+               Select the correct choice.</p>
+               <p>Press the spacebar to begin.</p>`,
+  };
+
+  /* Stimuli */
+  var matchingStimuli = [
+    { sample: "attractive", context: "SAME", choices: ["sociable", "intelligent"], correct: 0 },
+    { sample: "attractive", context: "OPPOSITE", choices: ["intelligent", "healthy"], correct: 0 },
+    { sample: "sociable", context: "SAME", choices: ["competent", "healthy"], correct: 1 },
+    { sample: "sociable", context: "OPPOSITE", choices: ["competent", "attractive"], correct: 0 },
+  ];
+
+  /* Shuffle the Trial Order */
+  var shuffledStimuli = jsPsych.randomization.shuffle(matchingStimuli);
+
+  /* Matching Task Trials with Fixed Context Position */
+  var matchingTrials = [];
+  for (var i = 0; i < shuffledStimuli.length; i++) {
+    (function(trialData) {
+      // Phase 1: Show context and sample stimulus
+      var phase1 = {
+        type: "html-keyboard-response",
+        stimulus: `
+          <div class="trial-container">
+            <div class="context-stimulus">${trialData.context}</div>
+            <div class="sample-stimulus">${trialData.sample}</div>
+          </div>
+        `,
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 2000, // Show for 2 seconds
+      };
+
+      // Phase 2: Show choices with sample stimulus hidden
+      var phase2 = {
+        type: "html-button-response",
+        stimulus: `
+          <div class="trial-container">
+            <div class="context-stimulus">${trialData.context}</div>
+            <div class="sample-stimulus hidden">${trialData.sample}</div> <!-- Hidden sample -->
+          </div>
+        `,
+        choices: function() {
+          // Shuffle the choices and determine the new correct index
+          var shuffledChoices = jsPsych.randomization.shuffle(
+            trialData.choices.map((choice, index) => ({
+              choice: choice,
+              originalIndex: index,
+            }))
+          );
+
+          // Update trialData with the shuffled choices and new correct index
+          trialData.shuffledChoices = shuffledChoices.map(obj => obj.choice);
+          trialData.correctIndex = shuffledChoices.findIndex(obj => obj.originalIndex === trialData.correct);
+
+          return trialData.shuffledChoices; // Display the shuffled choices
+        },
+        prompt: "<p>Select the word that matches the context.</p>",
+        data: {
+          task: "matching-to-sample",
+          sample: trialData.sample,
+          context: trialData.context,
+          shuffledChoices: function() {
+            return trialData.shuffledChoices;
+          },
+          correctIndex: function() {
+            return trialData.correctIndex;
+          },
+        },
+        on_finish: function(data) {
+          // Check if the response matches the updated correct index
+          data.correct = data.button_pressed == trialData.correctIndex;
+        },
+      };
+
+      // Feedback trial
+      var feedbackTrial = {
+        type: "html-keyboard-response",
+        stimulus: function() {
+          var lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+          return lastTrialData.correct
+            ? "<p style='color: green;'>Correct!</p>"
+            : "<p style='color: red;'>Incorrect!</p>";
+        },
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1000, // Show feedback for 1 second
+      };
+
+      // Add trials to the timeline
+      matchingTrials.push(phase1, phase2, feedbackTrial);
+    })(shuffledStimuli[i]);
+  }
+
+  /* Restart Logic */
+  var matchingLoop = {
+    timeline: matchingTrials,
+    loop_function: function(data) {
+      // Check mistakes in the current block
+      var currentData = data.filter({ task: "matching-to-sample" });
+      var mistakes = currentData.filter({ correct: false }).count();
+
+      if (mistakes > 0) {
+        var restartMessage = {
+          type: "html-keyboard-response",
+          stimulus: `<p>You made a mistake. The task will restart.<br>
+                     Please try to complete the task without any errors.<br>
+                     Press any key to begin again.</p>`,
+        };
+        timeline.unshift(restartMessage); // Add the restart message
+        return true; // Restart the task
+      }
+      return false; // Exit the loop
+    },
+  };
+
+  /* Timeline */
+  timeline.push(activeFullscreen, matchingInstructions, matchingLoop);
+
+  /* Initialize Experiment */
+  jsPsych.init({
+    timeline: timeline,
+    max_load_time: 500 * 1000,
+    exclusions: {
+      min_width: 1100,
+      min_height: 600,
+    },
+    on_finish: function(data) {
+      document.body.innerHTML = "<p>Thank you for participating! The study is now complete.</p>";
+    },
+  });
+</script>
+
+</html>

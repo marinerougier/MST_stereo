@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Matching-to-Sample Task</title>
+  <script src="jsPsych-6.1.0/jspsych.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-survey-likert.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+  <script src="js/jspsych-html-slider-response_required.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-external-html.js"></script>
+  <script src="jsPsych-6.1.0/plugins/jspsych-html-mouse-response.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/lodash.min.js"></script>
+  <script src="js/firebase.js"></script>
+  <link href="jsPsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<script>
+  // Stimuli list
+  var stimuli = [
+    {
+      sample: "apple",
+      choices: ["apple", "banana", "orange"],
+      correct: 0
+    },
+    {
+      sample: "table",
+      choices: ["chair", "table", "lamp"],
+      correct: 1
+    },
+    {
+      sample: "dog",
+      choices: ["cat", "dog", "bird"],
+      correct: 1
+    }
+  ];
+
+  // Instructions
+  var instructions = {
+    type: "html-keyboard-response",
+    stimulus: "<p>Welcome to the matching-to-sample task.<br>" +
+              "You will see a sample word and three options. Select the option that matches the sample.<br>" +
+              "Press any key to begin.</p>"
+  };
+
+  // Trials
+  var trials = [];
+  for (var i = 0; i < stimuli.length; i++) {
+    trials.push({
+      type: "html-button-response",
+      stimulus: "<p>Sample: <strong>" + stimuli[i].sample + "</strong></p>",
+      choices: stimuli[i].choices,
+      prompt: "<p>Select the word that matches the sample.</p>",
+      data: {
+        sample: stimuli[i].sample,
+        choices: stimuli[i].choices,
+        correct: stimuli[i].correct
+      },
+      on_finish: function(data) {
+        // Check if the response is correct
+        data.correct = (data.button_pressed == data.correct);
+      }
+    });
+  }
+
+  // Define the experiment timeline
+  var timeline = [];
+  timeline.push(instructions);
+  timeline = timeline.concat(trials);
+
+  // Start the experiment
+  jsPsych.init({
+    timeline: timeline,
+    on_finish: function() {
+      jsPsych.data.displayData(); // Show results at the end
+    }
+  });
+</script>
+</body>
+</html>
