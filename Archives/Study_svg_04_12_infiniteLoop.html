@@ -71,6 +71,11 @@
   var prolificID = jsPsych.data.getURLVariable("PROLIFIC_PID");
   if(prolificID == null) {prolificID = "999";}
 
+    // Variable coding for the consistent vs. inconsistent matching-to-sample training
+  var training_cond = jsPsych.data.getURLVariable("training_cond");
+  if(training_cond == null) {training_cond = jsPsych.randomization.sampleWithoutReplacement(["consistent", "inconsistent"], 1)[0];}
+
+
   /* EXPERIMENT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
   /* Fullscreen mode */
   var activeFullscreen = {
@@ -194,7 +199,7 @@
       var html = "";
       html += "<h1>Learning Task</h1>";
       html += "<p class = 'justify'>The first part of the task is now over. Now, you will perform 8 trials. <br><br>";
-      html += "<b>Again, try to answer as accurately as possible</b>. <b><u>If you make more than 1 mistake you will have to do all 8 trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b></p>";
+      html += "<b>Again, try to answer as accurately as possible</b>. <b><u>If you make more than 1 mistake you will have to do all eight trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -207,7 +212,7 @@
     stimulus: function() {
       var html = "";
       html += "<h1>Learning Task</h1>";
-      html += "<p class = 'justify'>You can now proceed to the next task!<br>";
+      html += "<p class = 'justify'>Congratulations, you responded accurately and made less than one mistake in a row!<br>";
       html += "<b>Now, you will perform new trials. </b>. Note that we will not provide you any accuracy feedback. <b><u>Based on what you just learned</u>, try to answer as accurately as possible</b>.</p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
@@ -349,11 +354,6 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
     `,
     choices: jsPsych.NO_KEYS,
     trial_duration: 3000, // Show for 3 seconds
-    data: {
-      retryCount: function () {
-        return retryCount; // Include the current retry count
-      },
-    },
   };
 
   // Phase 2: Show choices with the trial counter below
@@ -397,9 +397,6 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
       correctIndex: function () {
         return trialData.correctIndex;
       },
-      retryCount: function () {
-        return retryCount; // Include the current retry count
-      },
     },
     on_finish: function (data) {
       // Check if the response matches the updated correct index
@@ -418,49 +415,31 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
     },
     choices: jsPsych.NO_KEYS,
     trial_duration: 1000, // Show feedback for 1 second
-    data: {
-      retryCount: function () {
-        return retryCount; // Include the current retry count
-      },
-    },
   };
 
   // Blank screen trial after feedback
-  var blankScreenTrial = {
-    type: "html-keyboard-response",
-    stimulus: "",
-    choices: jsPsych.NO_KEYS,
-    trial_duration: 1000, // Show blank screen for 1 second
-    data: {
-      retryCount: function () {
-        return retryCount; // Include the current retry count
-      },
-    },
-  };
-
+   var blankScreenTrial = {
+      type: "html-keyboard-response",
+      stimulus: "",
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 1000, // Show blank screen for 1 second
+    };
+    
   // Add trials to the timeline
   matchingTrials_loop.push(phase1, phase2, feedbackTrial, blankScreenTrial);
 });
 
-// Variable to track retries
-var maxRetries = 2;  //5
-var retryCount = 0;
 
 /* Restart Logic */
 var matchingLoop = {
   timeline: matchingTrials_loop,
-  loop_function: function (data) {
+  loop_function: function(data) {
     // Check mistakes in the current block
     var currentData = data.filter({ task: "matching-to-sample_loop" });
     var mistakes = currentData.filter({ correct: false }).count();
 
-    if (mistakes > 1) {
-      retryCount++;
-      if (retryCount < maxRetries) {
-        return true; // Restart the task
-      } else {
-        return false; // Exit after 5 retries
-      }
+    if (mistakes > 1) { // Set the mistake threshold
+      return true; // Restart the task
     }
     return false; // Exit the loop
   },
@@ -808,7 +787,7 @@ var likingGrp = {
                 matchingInstructions_2,
                 matchingInstructions_3,
                 matchingInstructions_4,
-                ...matchingTrials_training,
+               // ...matchingTrials_training,
                 matchingInstructions_5,
                 matchingLoop,
                 matchingInstructions_6,
@@ -850,12 +829,11 @@ var likingGrp = {
       jsPsych.data.addProperties({
         jspsych_id: jspsych_id,
         prolificID: prolificID,
-
+        training_cond: training_cond,
         totalTime: jsPsych.totalTime()
       });
 
       var dataMTS_training = data.filter({ task: "matching-to-sample_training" }).csv();
-      var dataMTS_loop = data.filter({ task: "matching-to-sample_loop" }).csv();
       var dataMTS_measure = data.filter({ task: "matching-to-sample_measure" }).csv();
 
       /* Send data to Firebase */
@@ -863,11 +841,7 @@ var likingGrp = {
         .ref("MTS_stereo/" + jspsych_id + "/")
         .update({ dataMTS_training })
         .then(function () {
-      database
-        .ref("MTS_stereo/" + jspsych_id + "/")
-        .update({ dataMTS_loop })
-        .then(function () {
-      database
+          database
         .ref("MTS_stereo/" + jspsych_id + "/")
         .update({ dataMTS_measure })
         .then(function () {
@@ -875,7 +849,6 @@ var likingGrp = {
               $("#jspsych-content").html(debrief);
           });
         });
-      });
     },
   });
 </script>
