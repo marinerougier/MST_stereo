@@ -152,8 +152,8 @@
       html += "<h1>Learning Task</h1>";
       html += "<p class = 'justify'>To learn information about traits, you will perform several trials.<br><br> ";
       html += "At the start of each trial, <b>a target personality trait will appear on the screen (e.g., the word 'anxious') <u>during 2 seconds</u></b>. Then, the target trait will disappear and <b>two response options (e.g., the traits 'aggressive' and 'truthful') will be displayed.</b> <br><br>";
-      html += "Your task will be to select one response option by clicking on it. After you make a choice, <b>a message on the screen will tell you whether your choice was 'correct' or 'incorrect'</b>. If the response was 'incorrect', it means that the correct choice was the other one. <br><br>";
-      html += "Importantly, to be able to accurately perform the task, <b><u>you have to remember what the correct response was.</u></b> As you will see, trials will repeat until you correctly respond. </p>";
+      html += "Your task will be to click on one response option. After you make a choice, <b>a message on the screen will tell you whether your choice was 'correct' or 'incorrect'</b>. If the response was 'incorrect', it means that the correct choice was the other one. <br><br>";
+      html += "To be able to accurately perform the task, <b><u>you have to remember what the correct response was for each target trait.</u></b></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -166,8 +166,8 @@
     stimulus: function() {
       var html = "";
       html += "<h1>Learning Task</h1>";
-      html += "<p class = 'justify'>Importantly, when the target personality trait will appear on the screen, it will  <b>appear together with information on whether it is <u>positively or negatively related to the correct trait</u>.</b>. <br><br>The word <b>'POSITIVE' means that a the target trait (e.g., 'anxious') is positively related to the correct response </b>(e.g., the word 'truthful'). <br><br>The word <b>'NEGATIVE' means that the target trait (e.g., 'anxious') is negatively related to the correct response </b>(e.g., the word 'truthful').<br><br>";
-      html += "Importantly, to be able to accurately perform the task and avoid too many repetitions, <b><u>you have to remember the correct response, but also whether the relation is 'POSITIVE' or 'NEGATIVE'.</u></b> </p>";
+      html += "<p class = 'justify'>Importantly, the target personality trait will <b>appear on the screen together with information on whether it is <u>positively or negatively related to the correct trait</u>.</b>. <br><br>The word <b>'POSITIVE' means that a the target trait (e.g., 'anxious') is positively related to the correct response </b>(e.g., the word 'truthful'). <br><br>The word <b>'NEGATIVE' means that the target trait (e.g., 'anxious') is negatively related to the correct response </b>(e.g., the word 'truthful').<br><br>";
+      html += "Importantly, to be able to accurately perform the task, <b><u>you have to remember the correct response for each trait, but also whether the relation is 'POSITIVE' or 'NEGATIVE'.</u></b> </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -194,7 +194,7 @@
       var html = "";
       html += "<h1>Learning Task - Part 2</h1>";
       html += "<p class = 'justify'>Part 1 is now over. In Part 2, you will perform 8 trials. <br><br>";
-      html += "<b><u>However, if you make more than 1 mistake you will have to do all 8 trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b> <b>Thus, try to answer as accurately as possible</b>. </p>";
+      html += "<b>VERY IMPORTANT: <u>if you make more than 1 mistake you will have to do all 8 trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b> <b>Thus, try to answer as accurately as possible</b>. </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -211,7 +211,7 @@
     },
     stimulus: function() {
       var html = "";
-      html += "<p class='justify'>Part 2 is now over. <b>Before going to Part 3 of the Learning Task, we will ask you a few questions.</b> ";
+      html += "<p class='justify'>Part 2 is now over.<br><br> <b>Before going to Part 3, we will ask you a few questions.</b> ";
       html += "It is extremely important that you try to answer <b>as honestly and as spontaneously as possible.</b></br></br>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to begin</p>";
       return html;
@@ -226,7 +226,7 @@
       var html = "";
       html += "<h1>Learning Task - Part 3</h1>";
       html += "<p class = 'justify'>You can now proceed to Part 3 of the Learning Task.<br>";
-      html += "<b>Now, you will perform new trials. </b>Note that we will not provide you any accuracy feedback. <b><u>Based on what you learned in Parts 1 and 2</u>, try to answer as accurately as possible</b>.</p>";
+      html += "<b>Now, you will perform a new set of 20 trials. </b>Note that we will not provide you any accuracy feedback. <b><u>Based on what you learned in Parts 1 and 2</u>, try to answer as accurately as possible</b>.</p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -238,7 +238,7 @@
     choices: [32],
     stimulus: function() {
       var html = "";
-      html += "<p class = 'justify'>Now we will ask you some a few more questions Again, please answer <b>as honestly and as spontaneously as possible.</b>.<br></p>";
+      html += "<p class = 'justify'>Now we will ask you some a few more questions Again, please answer <b>as honestly and as spontaneously as possible.</b><br></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -261,13 +261,13 @@ positions.forEach((position, index) => {
 // Create the stimuli using the assigned traits
 var matchingStimuli = [
   { sample: positionAssignment["A1"], context: "POSITIVE", choices: [positionAssignment["B1"], positionAssignment["B2"]], correct: 0 },
-  { sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["B2"], positionAssignment["B1"]], correct: 0 },
+//  { sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["B2"], positionAssignment["B1"]], correct: 0 },
   { sample: positionAssignment["B1"], context: "POSITIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
-  { sample: positionAssignment["B1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
+//  { sample: positionAssignment["B1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
 
-  { sample: positionAssignment["A2"], context: "POSITIVE", choices: [positionAssignment["B2"], positionAssignment["B1"]], correct: 0 },
+//  { sample: positionAssignment["A2"], context: "POSITIVE", choices: [positionAssignment["B2"], positionAssignment["B1"]], correct: 0 },
   { sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["B1"], positionAssignment["B2"]], correct: 0 },
-  { sample: positionAssignment["B2"], context: "POSITIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
+//  { sample: positionAssignment["B2"], context: "POSITIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
   { sample: positionAssignment["B2"], context: "NEGATIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
 ];
 
@@ -484,7 +484,7 @@ var matchingLoop = {
     var currentData = data.filter({ task: "matching-to-sample_loop" });
     var mistakes = currentData.filter({ correct: false }).count();
 
-    if (mistakes > 1) {
+    if (mistakes > 8) {                                                             // HERE CHANGE FOR 1!!!!!
       retryCount++;
       if (retryCount < maxRetries) {
         return true; // Restart the task
@@ -500,33 +500,33 @@ var matchingLoop = {
   var matchingStimuli_measure = [
     // Mutual entailment
     { sample: positionAssignment["B1"], context: "POSITIVE", choices: [positionAssignment["A1"], positionAssignment["B2"]], correct: 0 },
-    { sample: positionAssignment["B1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["A1"]], correct: 0 },
+    //{ sample: positionAssignment["B1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["A1"]], correct: 0 },
 
     { sample: positionAssignment["B2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["A2"]], correct: 0 },
-    { sample: positionAssignment["B2"], context: "POSITIVE", choices: [positionAssignment["A2"], positionAssignment["B1"]], correct: 0 },
+    //{ sample: positionAssignment["B2"], context: "POSITIVE", choices: [positionAssignment["A2"], positionAssignment["B1"]], correct: 0 },
 
     { sample: positionAssignment["C1"], context: "POSITIVE", choices: [positionAssignment["B1"], positionAssignment["C2"]], correct: 0 },
-    { sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["B2"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["B2"], positionAssignment["C2"]], correct: 0 },
 
     { sample: positionAssignment["C2"], context: "POSITIVE", choices: [positionAssignment["B2"], positionAssignment["C1"]], correct: 0 },
-    { sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["B1"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["B1"], positionAssignment["C1"]], correct: 0 },
 
     // Combinatorial entailment
     { sample: positionAssignment["A1"], context: "POSITIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
-    { sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
-    { sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["C1"]], correct: 0 },
 
     { sample: positionAssignment["A2"], context: "POSITIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
-    { sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
-    { sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["C2"]], correct: 0 },
 
     { sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["B1"]], correct: 0 },
-    { sample: positionAssignment["C1"], context: "POSITIVE", choices: [positionAssignment["A1"], positionAssignment["C2"]], correct: 0 },
-    { sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["B1"]], correct: 0 },
+    //{ sample: positionAssignment["C1"], context: "POSITIVE", choices: [positionAssignment["A1"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["B1"]], correct: 0 },
 
     { sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["C1"], positionAssignment["B2"]], correct: 0 },
-    { sample: positionAssignment["C2"], context: "POSITIVE", choices: [positionAssignment["A2"], positionAssignment["C1"]], correct: 0 },
-    { sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["B2"]], correct: 0 },
+    //{ sample: positionAssignment["C2"], context: "POSITIVE", choices: [positionAssignment["A2"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["B2"]], correct: 0 },
   ];
 
   var shuffledStimuli_measure = jsPsych.randomization.shuffle(matchingStimuli_measure);
@@ -796,8 +796,8 @@ var likingGrp = {
   debrief += "really about, and they behave a certain way because of it, our results get messed up. That is because they are not behaving "; 
   debrief += "like they naturally would in the real world. The whole point of this experiment is to find out how people would ";
   debrief += "naturally behave.<br><br>";
-  debrief += "Now we would like to explain what we were trying to learn about with this study. In the first task (the Learning Task), we trained you to perceive some traits as being similar and some other traits are being opposite (with the SAME / OPPOSITE indication). "; 
-  debrief += "For instance, if during the Learning Task you had to select the word 'cooperative' when the word 'assertive' was displayed with SAME, you should perceive the two traits (cooperative and assertive) as being similar. Our hypothesis is that this should have influenced your responses in the questionnaire (when you had to indicate the extent to which people who have one trait are likely to have another trait). <br><br>";
+  debrief += "Now we would like to explain what we were trying to learn about with this study. In the first task (the Learning Task), we trained you to perceive some traits as being positively related and some other traits are being negatively related (with the POSITIVE / NEGATIVE indication). "; 
+  debrief += "For instance, if during the Learning Task you had to select the word 'cooperative' when the word 'assertive' was displayed with POSITIVE, you should perceive the two traits (cooperative and assertive) as being positively related. Our hypothesis is that this should have influenced your responses in the questionnaire (when you had to indicate the extent to which people who have one trait are likely to have another trait). <br><br>";
   debrief += "We would like to emphasize that there are no correct responses in this study: We were looking at people’s natural responses. ";
   debrief += "We hope you understand that we couldn't tell you all of this before because it would have ruined our study. ";
   debrief += "Again, your responses will be anonymous and will be analyzed as part of a group of responses.</br></br>";
@@ -812,7 +812,7 @@ var likingGrp = {
 
 
   /* TIMELINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  //timeline.push(consent);
+  timeline.push(consent);
   timeline.push(activeFullscreen, 
                 Instr_gene1,
                 matchingInstructions_1,
