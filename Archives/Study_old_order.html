@@ -102,7 +102,7 @@
 
     var consent = {
       type:'external-html',
-      url: "https://marinerougier.github.io/MST_stereo/external_page_consent.html",
+      url: "https://marinerougier.github.io/Plac_EC/external_page_consent.html",
       cont_btn: "start",
       on_load: function() {
           $('.jspsych-content-wrapper').css({ "height": "1500px" });
@@ -179,8 +179,8 @@
     choices: [32],
     stimulus: function() {
       var html = "";
-      html += "<h1>Learning Task - Part 1</h1>";
-      html += "<p class = 'justify'>The Learning Task is divided into <b>three parts</b>. In Part 1, you will perform 48 trials. Try to <b>respond as accurately as possible.</b></p>";
+      html += "<h1>Learning Task</h1>";
+      html += "<p class = 'justify'>Now, you will perform 48 trials. Try to <b>respond as accurately as possible.</b></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -192,28 +192,10 @@
     choices: [32],
     stimulus: function() {
       var html = "";
-      html += "<h1>Learning Task - Part 2</h1>";
-      html += "<p class = 'justify'>Part 1 is now over. In Part 2, you will perform 8 trials. <br><br>";
+      html += "<h1>Learning Task</h1>";
+      html += "<p class = 'justify'>The first part of the task is now over. Now, you will perform 8 trials. <br><br>";
       html += "<b><u>However, if you make more than 1 mistake you will have to do all 8 trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b> <b>Thus, try to answer as accurately as possible</b>. </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
-      return html;
-    },
-  };
-
-  var Instr_Quest = {
-    type: "html-keyboard-response",
-    post_trial_gap: 300,
-    choices: [32],
-    on_load: function() {
-          $('.jspsych-content-wrapper').css({ "width": "900px" });
-          $(".jspsych-content").css("max-width", "90%");
-          $('.jspsych-content-wrapper').css({ "height": "1200px" });
-    },
-    stimulus: function() {
-      var html = "";
-      html += "<p class='justify'>Part 2 is now over. <b>Before going to Part 3 of the Learning Task, we will ask you a few questions.</b> ";
-      html += "It is extremely important that you try to answer <b>as honestly and as spontaneously as possible.</b></br></br>";
-      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to begin</p>";
       return html;
     },
   };
@@ -224,21 +206,9 @@
     choices: [32],
     stimulus: function() {
       var html = "";
-      html += "<h1>Learning Task - Part 3</h1>";
-      html += "<p class = 'justify'>You can now proceed to Part 3 of the Learning Task.<br>";
-      html += "<b>Now, you will perform new trials. </b>Note that we will not provide you any accuracy feedback. <b><u>Based on what you learned in Parts 1 and 2</u>, try to answer as accurately as possible</b>.</p>";
-      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
-      return html;
-    },
-  };
-
-  var Instr_demo = {
-    type: "html-keyboard-response",
-    post_trial_gap: 300,
-    choices: [32],
-    stimulus: function() {
-      var html = "";
-      html += "<p class = 'justify'>Now we will ask you some a few more questions Again, please answer <b>as honestly and as spontaneously as possible.</b>.<br></p>";
+      html += "<h1>Learning Task</h1>";
+      html += "<p class = 'justify'>You can now proceed to the next task!<br>";
+      html += "<b>Now, you will perform new trials. </b>Note that we will not provide you any accuracy feedback. <b><u>Based on what you just learned</u>, try to answer as accurately as possible</b>.</p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -583,6 +553,25 @@ var matchingLoop = {
 
 // Questions ---------------------------------------------------------------------------------------------------------------
 
+/* Questions INSTRUCTIONS */
+  var Instr_Quest = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    on_load: function() {
+          $('.jspsych-content-wrapper').css({ "width": "900px" });
+          $(".jspsych-content").css("max-width", "90%");
+          $('.jspsych-content-wrapper').css({ "height": "1200px" });
+    },
+    stimulus: function() {
+      var html = "";
+      html += "<p class='justify'>The Learning Task is over. Now, we will ask you a few questions. ";
+      html += "It is extremely important that you try to answer <b>as honestly and as spontaneously as possible.</b></br></br>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to begin</p>";
+      return html;
+    },
+  };
+
 // Traits ratings (conceptual beliefs)
 // Generate all unique trait pairs (excluding self-pairs)
 var traitPairs = [];
@@ -819,14 +808,13 @@ var likingGrp = {
                 matchingInstructions_2,
                 matchingInstructions_3,
                 matchingInstructions_4,
-                ...matchingTrials_training, // MTS training
+                ...matchingTrials_training,
                 matchingInstructions_5,
-                matchingLoop, // MTS loop
+                matchingLoop,
+                matchingInstructions_6,
+                ...matchingTrials_measure, // Add the MEASURE task here
                 Instr_Quest,
                 likingGrp,
-                matchingInstructions_6,
-                ...matchingTrials_measure, // MTS measure
-                Instr_demo,
                 demand_awareness,
                 influence_awareness,
                 demand_compliance,
