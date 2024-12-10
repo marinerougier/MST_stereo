@@ -166,7 +166,7 @@
     stimulus: function() {
       var html = "";
       html += "<h1>Learning Task</h1>";
-      html += "<p class = 'justify'>Importantly, the target personality trait will <b>appear on the screen together with information on whether it is <u>positively or negatively related to the correct trait</u>.</b>. <br><br><b>'POSITIVE relation' means that the target trait (e.g., 'anxious') is positively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are more likely to have the other trait too</b>. <br><br>The word <b>'NEGATIVE relation' means that the target trait (e.g., 'anxious') is negatively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are less likely to have the other trait too</b>.<br><br>";
+      html += "<p class = 'justify'>Importantly, the target personality trait will <b>appear on the screen together with information on whether it is <u>positively or negatively related to the correct trait</u>.</b>. <br><br>The word <b>'POSITIVE' means that a the target trait (e.g., 'anxious') is positively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are more likely to have the other trait too</b>. <br><br>The word <b>'NEGATIVE' means that the target trait (e.g., 'anxious') is negatively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are less likely to have the other trait too</b>.<br><br>";
       html += "Importantly, <b>based on what is the correct response AND the whether the relation is positive or negative, <u>you have to remember which traits co-occur or not in people.</u></b> </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
@@ -180,8 +180,21 @@
     stimulus: function() {
       var html = "";
       html += "<h1>Learning Task - Part 1</h1>";
-      html += "<p class = 'justify'>The Learning Task is divided into <b>two parts</b>. In Part 1, you will perform 8 trials. <br><br>";
-      html += "<b>VERY IMPORTANT: <u>if you make more than 1 mistake on those 8 trials, you will have to do all 8 trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b> <b>Thus, try to answer as accurately as possible</b>. </p>";
+      html += "<p class = 'justify'>The Learning Task is divided into <b>three parts</b>. In Part 1, you will perform 48 trials. Try to <b>respond as accurately as possible.</b></p>";
+      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
+      return html;
+    },
+  };
+
+  var matchingInstructions_5 = {
+    type: "html-keyboard-response",
+    post_trial_gap: 300,
+    choices: [32],
+    stimulus: function() {
+      var html = "";
+      html += "<h1>Learning Task - Part 2</h1>";
+      html += "<p class = 'justify'>Part 1 is now over. In Part 2, you will perform 8 trials. <br><br>";
+      html += "<b>VERY IMPORTANT: <u>if you make more than 1 mistake you will have to do all 8 trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b> <b>Thus, try to answer as accurately as possible</b>. </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -198,7 +211,7 @@
     },
     stimulus: function() {
       var html = "";
-      html += "<p class='justify'>Part 1 is now over.<br><br> <b>Before going to Part 2, we will ask you a few questions.</b> ";
+      html += "<p class='justify'>Part 2 is now over.<br><br> <b>Before going to Part 3, we will ask you a few questions.</b> ";
       html += "It is extremely important that you try to answer <b>as honestly and as spontaneously as possible.</b></br></br>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to begin</p>";
       return html;
@@ -211,9 +224,9 @@
     choices: [32],
     stimulus: function() {
       var html = "";
-      html += "<h1>Learning Task - Part 2</h1>";
-      html += "<p class = 'justify'>You can now proceed to Part 2 of the Learning Task.<br>";
-      html += "<b>Now, you will perform a new set of 20 trials. </b>Note that we will not provide you any accuracy feedback. <b><u>Based on what you learned in Part 1</u>, try to answer as accurately as possible</b>.</p>";
+      html += "<h1>Learning Task - Part 3</h1>";
+      html += "<p class = 'justify'>You can now proceed to Part 3 of the Learning Task.<br>";
+      html += "<b>Now, you will perform a new set of 20 trials. </b>Note that we will not provide you any accuracy feedback. <b><u>Based on what you learned in Parts 1 and 2</u>, try to answer as accurately as possible</b>.</p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -231,8 +244,8 @@
     },
   };
 
-/* Matching-to-sample LOOP */
-// Define the traits
+ /* Matching-to-sample TRAINING */
+  // Define the traits
 var traits = ["cheerful", "cooperative", "intellectual", "assertive", "emotional", "cautious"];
 
 // Define the positions
@@ -247,17 +260,108 @@ positions.forEach((position, index) => {
 
 // Create the stimuli using the assigned traits
 var matchingStimuli = [
-  { sample: "A1", context: "POSITIVE relation", choices: ["B1", "B2"], correct: 0 },
-  //{ sample: "A1", context: "NEGATIVE relation", choices: ["B2", "B1"], correct: 0 },
-  { sample: "B1", context: "POSITIVE relation", choices: ["C1", "C2"], correct: 0 },
-  //{ sample: "B1", context: "NEGATIVE relation", choices: ["C2", "C1"], correct: 0 },
+  { sample: positionAssignment["A1"], context: "POSITIVE", choices: [positionAssignment["B1"], positionAssignment["B2"]], correct: 0 },
+//  { sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["B2"], positionAssignment["B1"]], correct: 0 },
+  { sample: positionAssignment["B1"], context: "POSITIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
+//  { sample: positionAssignment["B1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
 
-  { sample: "A2", context: "POSITIVE relation", choices: ["B2", "B1"], correct: 0 },
-  //{ sample: "A2", context: "NEGATIVE relation", choices: ["B1", "B2"], correct: 0 },
-  { sample: "B2", context: "POSITIVE relation", choices: ["C2", "C1"], correct: 0 },
-  //{ sample: "B2", context: "NEGATIVE relation", choices: ["C1", "C2"], correct: 0 },
+//  { sample: positionAssignment["A2"], context: "POSITIVE", choices: [positionAssignment["B2"], positionAssignment["B1"]], correct: 0 },
+  { sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["B1"], positionAssignment["B2"]], correct: 0 },
+//  { sample: positionAssignment["B2"], context: "POSITIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
+  { sample: positionAssignment["B2"], context: "NEGATIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
 ];
 
+// Repeat the stimuli 6 times and shuffle
+var repeatedStimuli = Array(1).fill(matchingStimuli).flat(); // Repeat the stimuli 6 times --> should be 6 here!!!
+var shuffledRepeatedStimuli = jsPsych.randomization.shuffle(repeatedStimuli);
+
+
+// Matching Task Trials
+var matchingTrials_training = [];
+for (var i = 0; i < shuffledRepeatedStimuli.length; i++) {
+  (function(trialData) {
+    // Phase 1: Show context and sample stimulus
+    var phase1 = {
+      type: "html-keyboard-response",
+      stimulus: `
+        <div class="trial-container">
+          <div class="context-stimulus">${trialData.context}</div>
+          <div class="sample-stimulus">${trialData.sample}</div>
+        </div>
+      `,
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 3000, // Show for 3 seconds
+    };
+
+    // Phase 2: Show choices with sample stimulus hidden
+    var phase2 = {
+      type: "html-button-response",
+      stimulus: `
+        <div class="trial-container">
+          <div class="context-stimulus hidden">${trialData.context}</div>
+          <div class="sample-stimulus hidden">${trialData.sample}</div> <!-- Hidden sample -->
+        </div>
+      `,
+      choices: function() {
+        // Shuffle the choices and determine the new correct index
+        var shuffledChoices = jsPsych.randomization.shuffle(
+          trialData.choices.map((choice, index) => ({
+            choice: choice,
+            originalIndex: index,
+          }))
+        );
+
+        // Update trialData with the shuffled choices and new correct index
+        trialData.shuffledChoices = shuffledChoices.map(obj => obj.choice);
+        trialData.correctIndex = shuffledChoices.findIndex(obj => obj.originalIndex === trialData.correct);
+
+        return trialData.shuffledChoices; // Display the shuffled choices
+      },
+      data: {
+        task: "matching-to-sample_training",
+        sample: trialData.sample,
+        context: trialData.context,
+        shuffledChoices: function() {
+          return trialData.shuffledChoices;
+        },
+        correctIndex: function() {
+          return trialData.correctIndex;
+        },
+      },
+      on_finish: function(data) {
+        // Check if the response matches the updated correct index
+        data.correct = data.button_pressed == trialData.correctIndex;
+      },
+    };
+
+    // Feedback trial
+    var feedbackTrial = {
+      type: "html-keyboard-response",
+      stimulus: function() {
+        var lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+        return lastTrialData.correct
+          ? "<p style='color: green;'>Correct!</p>"
+          : "<p style='color: red;'>Incorrect!</p>";
+      },
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 1000, // Show feedback for 1 second
+    };
+
+    // Blank screen trial after feedback
+        var blankScreenTrial = {
+          type: "html-keyboard-response",
+          stimulus: "",
+          choices: jsPsych.NO_KEYS,
+          trial_duration: 1000, // Show blank screen for 1 second
+        };
+
+    // Add trials to the timeline
+    matchingTrials_training.push(phase1, phase2, feedbackTrial, blankScreenTrial);
+  })(shuffledRepeatedStimuli[i]);
+}
+
+
+/* Matching-to-sample LOOP */
 // Shuffle the trial order
 var shuffledStimuli = jsPsych.randomization.shuffle(matchingStimuli);
 
@@ -270,7 +374,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
     stimulus: `
       <div class="trial-container">
         <div class="context-stimulus">${trialData.context}</div>
-        <div class="sample-stimulus">${positionAssignment[trialData.sample]}</div>
+        <div class="sample-stimulus">${trialData.sample}</div>
       </div>
     `,
     choices: jsPsych.NO_KEYS,
@@ -287,26 +391,27 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
     type: "html-button-response",
     stimulus: `
       <div class="trial-container">
+        <div class="context-stimulus hidden">${trialData.context}</div>
+        <div class="sample-stimulus hidden">${trialData.sample}</div>
       </div>
     `,
-      choices: function () {
-        // Shuffle the choices and determine the new correct index
-        var shuffledChoices = jsPsych.randomization.shuffle(
-          trialData.choices.map((choice, index) => ({
-            position: choice,
-            trait: positionAssignment[choice],
-            originalIndex: index,
-          }))
-        );
+    choices: function () {
+      // Shuffle the choices and determine the new correct index
+      var shuffledChoices = jsPsych.randomization.shuffle(
+        trialData.choices.map((choice, index) => ({
+          choice: choice,
+          originalIndex: index,
+        }))
+      );
 
-        // Save shuffled choices and correct index
-        trialData.shuffledChoices = shuffledChoices.map((obj) => obj.position); // Shuffled positions
-        trialData.correctIndex = shuffledChoices.findIndex(
-          (obj) => obj.originalIndex === trialData.correct
-        ); // Updated correct index
+      // Update trialData with the shuffled choices and new correct index
+      trialData.shuffledChoices = shuffledChoices.map((obj) => obj.choice);
+      trialData.correctIndex = shuffledChoices.findIndex(
+        (obj) => obj.originalIndex === trialData.correct
+      );
 
-        return shuffledChoices.map((obj) => obj.trait); // Display traits instead of positions
-      },
+      return trialData.shuffledChoices; // Display the shuffled choices
+    },
     prompt: `
       <div style="margin-top: 20px; text-align: center;">
         <p>Trial ${trialIndex + 1} / ${shuffledStimuli.length}</p>
@@ -314,29 +419,22 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
     `,
     data: {
       task: "matching-to-sample_loop",
-        samplePosition: trialData.sample, // Register sample position
-        sampleTrait: positionAssignment[trialData.sample], // Register sample trait
-        context: trialData.context,
-        choicePositions: trialData.choices, // Register positions of choices (original order)
-        choiceTraits: trialData.choices.map((pos) => positionAssignment[pos]), // Register traits of choices (original order)
-        correctPosition: trialData.choices[trialData.correct], // Register correct position (original)
-        correctTrait: positionAssignment[trialData.choices[trialData.correct]], // Register correct trait (original)
+      sample: trialData.sample,
+      context: trialData.context,
+      shuffledChoices: function () {
+        return trialData.shuffledChoices;
+      },
+      correctIndex: function () {
+        return trialData.correctIndex;
+      },
       retryCount: function () {
         return retryCount; // Include the current retry count
       },
     },
-      on_finish: function (data) {
-        // Check if the response matches the updated correct index
-        data.correct = data.button_pressed == trialData.correctIndex;
-
-        // Save selected position and trait in the data
-        data.selectedPosition = trialData.shuffledChoices[data.button_pressed];
-        data.selectedTrait = positionAssignment[trialData.shuffledChoices[data.button_pressed]];
-
-        // Update correctPosition and correctTrait to reflect randomized display
-        data.correctPosition = trialData.shuffledChoices[trialData.correctIndex];
-        data.correctTrait = positionAssignment[trialData.shuffledChoices[trialData.correctIndex]];
-      },
+    on_finish: function (data) {
+      // Check if the response matches the updated correct index
+      data.correct = data.button_pressed == trialData.correctIndex;
+    },
   };
 
   // Feedback trial
@@ -375,7 +473,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
 });
 
 // Variable to track retries
-var maxRetries = 2;                                                                  //HERE SHOULD BE 5 !!!
+var maxRetries = 2;  //5
 var retryCount = 0;
 
 /* Restart Logic */
@@ -386,7 +484,7 @@ var matchingLoop = {
     var currentData = data.filter({ task: "matching-to-sample_loop" });
     var mistakes = currentData.filter({ correct: false }).count();
 
-    if (mistakes > 8) {                                                             //HERE SHOULD BE 1 !!!
+    if (mistakes > 8) {                                                             // HERE CHANGE FOR 1!!!!!
       retryCount++;
       if (retryCount < maxRetries) {
         return true; // Restart the task
@@ -401,125 +499,100 @@ var matchingLoop = {
  /* Matching-to-sample MEASURE Task */
   var matchingStimuli_measure = [
     // Mutual entailment
-    { sample: "B1", context: "POSITIVE relation", choices: ["A1", "B2"], correct: 0 },
-    //{ sample: "B1", context: "NEGATIVE relation", choices: ["A2", "A1"], correct: 0 },
+    { sample: positionAssignment["B1"], context: "POSITIVE", choices: [positionAssignment["A1"], positionAssignment["B2"]], correct: 0 },
+    //{ sample: positionAssignment["B1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["A1"]], correct: 0 },
 
-    { sample: "B2", context: "NEGATIVE relation", choices: ["A1", "A2"], correct: 0 },
-    //{ sample: "B2", context: "POSITIVE relation", choices: ["A2", "B1"], correct: 0 },
+    { sample: positionAssignment["B2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["A2"]], correct: 0 },
+    //{ sample: positionAssignment["B2"], context: "POSITIVE", choices: [positionAssignment["A2"], positionAssignment["B1"]], correct: 0 },
 
-    { sample: "C1", context: "POSITIVE relation", choices: ["B1", "C2"], correct: 0 },
-    //{ sample: "C1", context: "NEGATIVE relation", choices: ["B2", "C2"], correct: 0 },
+    { sample: positionAssignment["C1"], context: "POSITIVE", choices: [positionAssignment["B1"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["B2"], positionAssignment["C2"]], correct: 0 },
 
-    { sample: "C2", context: "POSITIVE relation", choices: ["B2", "C1"], correct: 0 },
-    //{ sample: "C2", context: "NEGATIVE relation", choices: ["B1", "C1"], correct: 0 },
+    { sample: positionAssignment["C2"], context: "POSITIVE", choices: [positionAssignment["B2"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["B1"], positionAssignment["C1"]], correct: 0 },
 
     // Combinatorial entailment
-    { sample: "A1", context: "POSITIVE relation", choices: ["C1", "C2"], correct: 0 },
-    //{ sample: "A1", context: "NEGATIVE relation", choices: ["C2", "C1"], correct: 0 },
-    //{ sample: "A1", context: "NEGATIVE relation", choices: ["A2", "C1"], correct: 0 },
+    { sample: positionAssignment["A1"], context: "POSITIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["A1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["C1"]], correct: 0 },
 
-    { sample: "A2", context: "POSITIVE relation", choices: ["C2", "C1"], correct: 0 },
-    //{ sample: "A2", context: "NEGATIVE relation", choices: ["C1", "C2"], correct: 0 },
-    //{ sample: "A2", context: "NEGATIVE relation", choices: ["A1", "C2"], correct: 0 },
+    { sample: positionAssignment["A2"], context: "POSITIVE", choices: [positionAssignment["C2"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["C1"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["A2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["C2"]], correct: 0 },
 
-    { sample: "C1", context: "NEGATIVE relation", choices: ["C2", "B1"], correct: 0 },
-    //{ sample: "C1", context: "POSITIVE relation", choices: ["A1", "C2"], correct: 0 },
-    //{ sample: "C1", context: "NEGATIVE relation", choices: ["A2", "B1"], correct: 0 },
+    { sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["C2"], positionAssignment["B1"]], correct: 0 },
+    //{ sample: positionAssignment["C1"], context: "POSITIVE", choices: [positionAssignment["A1"], positionAssignment["C2"]], correct: 0 },
+    //{ sample: positionAssignment["C1"], context: "NEGATIVE", choices: [positionAssignment["A2"], positionAssignment["B1"]], correct: 0 },
 
-    { sample: "C2", context: "NEGATIVE relation", choices: ["C1", "B2"], correct: 0 },
-    //{ sample: "C2", context: "POSITIVE relation", choices: ["A2", "C1"], correct: 0 },
-    //{ sample: "C2", context: "NEGATIVE relation", choices: ["A1", "B2"], correct: 0 },
+    { sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["C1"], positionAssignment["B2"]], correct: 0 },
+    //{ sample: positionAssignment["C2"], context: "POSITIVE", choices: [positionAssignment["A2"], positionAssignment["C1"]], correct: 0 },
+    //{ sample: positionAssignment["C2"], context: "NEGATIVE", choices: [positionAssignment["A1"], positionAssignment["B2"]], correct: 0 },
   ];
 
-var shuffledStimuli_measure = jsPsych.randomization.shuffle(matchingStimuli_measure);
+  var shuffledStimuli_measure = jsPsych.randomization.shuffle(matchingStimuli_measure);
 
-// Matching Task Trials with Fixed Context Position
-var matchingTrials_measure = [];
-shuffledStimuli_measure.forEach((trialData, trialIndex) => {
-  // Phase 1: Show context and sample stimulus
-  var phase1 = {
-    type: "html-keyboard-response",
-    stimulus: `
-      <div class="trial-container">
-        <div class="context-stimulus">${trialData.context}</div>
-        <div class="sample-stimulus">${positionAssignment[trialData.sample]}</div>
-      </div>
-    `,
-    choices: jsPsych.NO_KEYS,
-    trial_duration: 3000, // Show for 3 seconds
-  };
+  var matchingTrials_measure = [];
+  shuffledStimuli_measure.forEach((trialData) => {
+    matchingTrials_measure.push({
+      type: "html-keyboard-response",
+      stimulus: `
+        <div class="trial-container">
+          <div class="context-stimulus">${trialData.context}</div>
+          <div class="sample-stimulus">${trialData.sample}</div>
+        </div>
+      `,
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 3000,
+    });
 
-  // Phase 2: Show choices with the trial counter below
-  var phase2 = {
-    type: "html-button-response",
-    stimulus: `
-      <div class="trial-container">
-      </div>
-    `,
-      choices: function () {
-        // Shuffle the choices and determine the new correct index
-        var shuffledChoices = jsPsych.randomization.shuffle(
-          trialData.choices.map((choice, index) => ({
-            position: choice,
-            trait: positionAssignment[choice],
-            originalIndex: index,
-          }))
-        );
+    var shuffledChoices = jsPsych.randomization.shuffle(
+      trialData.choices.map((choice, index) => ({ choice, originalIndex: index }))
+    );
+    var trialChoices = shuffledChoices.map((obj) => obj.choice);
+    var correctIndex = shuffledChoices.findIndex((obj) => obj.originalIndex === trialData.correct);
 
-        // Save shuffled choices and correct index
-        trialData.shuffledChoices = shuffledChoices.map((obj) => obj.position); // Shuffled positions
-        trialData.correctIndex = shuffledChoices.findIndex(
-          (obj) => obj.originalIndex === trialData.correct
-        ); // Updated correct index
-
-        return shuffledChoices.map((obj) => obj.trait); // Display traits instead of positions
-      },
-    data: {
-      task: "matching-to-sample_measure",
-        samplePosition: trialData.sample, // Register sample position
-        sampleTrait: positionAssignment[trialData.sample], // Register sample trait
+    matchingTrials_measure.push({
+      type: "html-button-response",
+      stimulus: `
+        <div class="trial-container">
+          <div class="context-stimulus hidden">${trialData.context}</div>
+          <div class="sample-stimulus hidden">${trialData.sample}</div>
+        </div>
+      `,
+      choices: trialChoices,
+      data: {
+        task: "matching-to-sample_measure",
+        sample: trialData.sample,
         context: trialData.context,
-        choicePositions: trialData.choices, // Register positions of choices (original order)
-        choiceTraits: trialData.choices.map((pos) => positionAssignment[pos]), // Register traits of choices (original order)
-        correctPosition: trialData.choices[trialData.correct], // Register correct position (original)
-        correctTrait: positionAssignment[trialData.choices[trialData.correct]], // Register correct trait (original)
-    },
-      on_finish: function (data) {
-        // Check if the response matches the updated correct index
-        data.correct = data.button_pressed == trialData.correctIndex;
-
-        // Save selected position and trait in the data
-        data.selectedPosition = trialData.shuffledChoices[data.button_pressed];
-        data.selectedTrait = positionAssignment[trialData.shuffledChoices[data.button_pressed]];
-
-        // Update correctPosition and correctTrait to reflect randomized display
-        data.correctPosition = trialData.shuffledChoices[trialData.correctIndex];
-        data.correctTrait = positionAssignment[trialData.shuffledChoices[trialData.correctIndex]];
+        shuffledChoices: trialChoices,
+        correctIndex: correctIndex,
       },
-  };
+      on_finish: function (data) {
+        data.correct = data.button_pressed == correctIndex;
+      },
+    });
 
-  // Blank screen trial after feedback
-  var blankScreenTrial = {
-    type: "html-keyboard-response",
-    stimulus: "",
-    choices: jsPsych.NO_KEYS,
-    trial_duration: 1000, // Show blank screen for 1 second
-  };
-
-  // Add trials to the timeline
-  matchingTrials_measure.push(phase1, phase2, blankScreenTrial);
-});
-
+    // Blank screen trial after feedback
+    matchingTrials_measure.push({
+      type: "html-keyboard-response",
+      stimulus: "",
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 1000, // Show blank screen for 1 second
+    });
+  });
 
 // Questions ---------------------------------------------------------------------------------------------------------------
 
- /* Self-reports on the relation between traits */
-// Generate all trait pairs (including reversed pairs) excluding self-pairs
+// Traits ratings (conceptual beliefs)
+// Generate all unique trait pairs (excluding self-pairs)
 var traitPairs = [];
 for (var i = 0; i < traits.length; i++) {
-  for (var j = 0; j < traits.length; j++) {
-    if (i !== j) {
+  for (var j = i + 1; j < traits.length; j++) { // Ensure each pair appears only once
+    // Randomize the order of traits within the pair
+    if (Math.random() < 0.5) {
       traitPairs.push([traits[i], traits[j]]);
+    } else {
+      traitPairs.push([traits[j], traits[i]]);
     }
   }
 }
@@ -528,25 +601,18 @@ for (var i = 0; i < traits.length; i++) {
 traitPairs = jsPsych.randomization.shuffle(traitPairs);
 
 // Generate the likert questions for all trait pairs
-var likertPreamble = '<p class="justify">Please indicate to what extent people who have one trait are likely to have the other trait. Here <b>we are interested in your own opinion</b>, that is, we want you to respond based on what you think. ' +
-  '<br><br> Use the scale from 1 = “Not at all” to 7 = “Totally”.</p>';
+var likertPreamble = '<p class = "justify">Please indicate to what extent people who have one trait are likely to have the other trait. ' +
+  'Use the scale from 1 = “Not at all” to 7 = “Totally”.</p>';
 
 var likertScale = ["1</br>Not at all", "2", "3", "4", "5", "6", "7</br>Totally"];
 
-// Store trait pairs with position data in questions
 var questionsLikingGrp = [];
 traitPairs.map(function(pair) {
-  var position1 = Object.keys(positionAssignment).find(pos => positionAssignment[pos] === pair[0]);
-  var position2 = Object.keys(positionAssignment).find(pos => positionAssignment[pos] === pair[1]);
-
-  var prompt = `In your opinion, are <b>${pair[0]}</b> people often <b>${pair[1]}</b>?`;
+  var prompt = `Do you think that people who are <b>${pair[0]}</b> are generally <b>${pair[1]}</b>?`;
   questionsLikingGrp.push({
     prompt: '<i>' + prompt + '</i>',
     labels: likertScale,
-    required: true,
-    data: {
-      pairPosition: `${position1}_${position2}`, // Store pair as positions (e.g., A1_A2)
-    },
+    required: true
   });
 });
 
@@ -557,22 +623,19 @@ var likingGrp = {
   questions: questionsLikingGrp,
   post_trial_gap: 300,
   on_load: function() {
-    $(".jspsych-content-wrapper").css("height", "10000px");
-  },
+    $(".jspsych-content-wrapper").css("height", "4000px");
+    },
   on_finish: function(data) {
     var parsed_response = JSON.parse(data.responses);
 
-    // Add responses to jsPsych data, with keys based on position pairs
+    // Add responses to jsPsych data, with dynamic keys for each trait pair
     traitPairs.forEach(function(pair, index) {
-      var position1 = Object.keys(positionAssignment).find(pos => positionAssignment[pos] === pair[0]);
-      var position2 = Object.keys(positionAssignment).find(pos => positionAssignment[pos] === pair[1]);
-      var positionKey = `${position1}_${position2}`;
-
+      var key = `${pair[0]}_${pair[1]}`;
       jsPsych.data.addProperties({
-        [positionKey]: parsed_response[`Q${index}`], // Register response in the format A1_A2
+        [key]: parsed_response[`Q${index}`]
       });
     });
-  },
+  }
 };
 
   // Demand awareness
@@ -631,7 +694,7 @@ var likingGrp = {
       },
   };
 
- // age
+ /* AGE */
   var age = {
       timeline: [{
         type: 'survey-text',
@@ -658,7 +721,6 @@ var likingGrp = {
       },
   };
 
- // Gender
   var gender = {
       type: 'survey-multi-choice',
       questions: [{prompt: "Please indicate your gender:", options: ['Male', 'Female', 'Other'], required: true}],
@@ -670,7 +732,6 @@ var likingGrp = {
       },
   };
 
-// language
   var languageOptions = ['Native speaker', 'Very well', 'Well', 'Average', 'Badly', 'Very badly'];
   var language = {
         type: 'survey-multi-choice',
@@ -684,7 +745,6 @@ var likingGrp = {
         },
     };
 
-// prolific ID reported
   var Prolific_reported = {
         timeline: [{
             type: 'survey-text',
@@ -706,7 +766,6 @@ var likingGrp = {
         },
     };
 
-// Optional comments
   var comments = {
         timeline: [{
             type: 'survey-text',
@@ -753,13 +812,15 @@ var likingGrp = {
 
 
   /* TIMELINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  //timeline.push(consent);
-  timeline.push(//activeFullscreen, 
+  timeline.push(consent);
+  timeline.push(activeFullscreen, 
                 Instr_gene1,
                 matchingInstructions_1,
                 matchingInstructions_2,
                 matchingInstructions_3,
                 matchingInstructions_4,
+                ...matchingTrials_training, // MTS training
+                matchingInstructions_5,
                 matchingLoop, // MTS loop
                 Instr_Quest,
                 likingGrp,
@@ -805,20 +866,26 @@ var likingGrp = {
         totalTime: jsPsych.totalTime()
       });
 
+      var dataMTS_training = data.filter({ task: "matching-to-sample_training" }).csv();
       var dataMTS_loop = data.filter({ task: "matching-to-sample_loop" }).csv();
       var dataMTS_measure = data.filter({ task: "matching-to-sample_measure" }).csv();
 
       /* Send data to Firebase */
       database
         .ref("MTS_stereo/" + jspsych_id + "/")
+        .update({ dataMTS_training })
+        .then(function () {
+      database
+        .ref("MTS_stereo/" + jspsych_id + "/")
         .update({ dataMTS_loop })
         .then(function () {
-        database
-          .ref("MTS_stereo/" + jspsych_id + "/")
-          .update({ dataMTS_measure })
-          .then(function () {
-                console.log("Data sent!");
-                $("#jspsych-content").html(debrief);
+      database
+        .ref("MTS_stereo/" + jspsych_id + "/")
+        .update({ dataMTS_measure })
+        .then(function () {
+              console.log("Data sent!");
+              $("#jspsych-content").html(debrief);
+          });
         });
       });
     },

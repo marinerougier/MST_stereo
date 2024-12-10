@@ -375,7 +375,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
 });
 
 // Variable to track retries
-var maxRetries = 2;                                                                  //HERE SHOULD BE 5 !!!
+var maxRetries = 2;  //5
 var retryCount = 0;
 
 /* Restart Logic */
@@ -386,7 +386,7 @@ var matchingLoop = {
     var currentData = data.filter({ task: "matching-to-sample_loop" });
     var mistakes = currentData.filter({ correct: false }).count();
 
-    if (mistakes > 8) {                                                             //HERE SHOULD BE 1 !!!
+    if (mistakes > 8) {                                                             // HERE CHANGE FOR 1!!!!!
       retryCount++;
       if (retryCount < maxRetries) {
         return true; // Restart the task
@@ -513,7 +513,6 @@ shuffledStimuli_measure.forEach((trialData, trialIndex) => {
 
 // Questions ---------------------------------------------------------------------------------------------------------------
 
- /* Self-reports on the relation between traits */
 // Generate all trait pairs (including reversed pairs) excluding self-pairs
 var traitPairs = [];
 for (var i = 0; i < traits.length; i++) {
@@ -575,6 +574,7 @@ var likingGrp = {
   },
 };
 
+
   // Demand awareness
   var demand_awareness = {
         timeline: [{
@@ -631,7 +631,7 @@ var likingGrp = {
       },
   };
 
- // age
+ /* AGE */
   var age = {
       timeline: [{
         type: 'survey-text',
@@ -658,7 +658,6 @@ var likingGrp = {
       },
   };
 
- // Gender
   var gender = {
       type: 'survey-multi-choice',
       questions: [{prompt: "Please indicate your gender:", options: ['Male', 'Female', 'Other'], required: true}],
@@ -670,7 +669,6 @@ var likingGrp = {
       },
   };
 
-// language
   var languageOptions = ['Native speaker', 'Very well', 'Well', 'Average', 'Badly', 'Very badly'];
   var language = {
         type: 'survey-multi-choice',
@@ -684,7 +682,6 @@ var likingGrp = {
         },
     };
 
-// prolific ID reported
   var Prolific_reported = {
         timeline: [{
             type: 'survey-text',
@@ -706,7 +703,6 @@ var likingGrp = {
         },
     };
 
-// Optional comments
   var comments = {
         timeline: [{
             type: 'survey-text',
@@ -764,7 +760,7 @@ var likingGrp = {
                 Instr_Quest,
                 likingGrp,
                 matchingInstructions_6,
-                ...matchingTrials_measure, // MTS measure
+                //...matchingTrials_measure, // MTS measure
                 Instr_demo,
                 demand_awareness,
                 influence_awareness,
@@ -805,20 +801,26 @@ var likingGrp = {
         totalTime: jsPsych.totalTime()
       });
 
+      var dataMTS_training = data.filter({ task: "matching-to-sample_training" }).csv();
       var dataMTS_loop = data.filter({ task: "matching-to-sample_loop" }).csv();
       var dataMTS_measure = data.filter({ task: "matching-to-sample_measure" }).csv();
 
       /* Send data to Firebase */
       database
         .ref("MTS_stereo/" + jspsych_id + "/")
+        .update({ dataMTS_training })
+        .then(function () {
+      database
+        .ref("MTS_stereo/" + jspsych_id + "/")
         .update({ dataMTS_loop })
         .then(function () {
-        database
-          .ref("MTS_stereo/" + jspsych_id + "/")
-          .update({ dataMTS_measure })
-          .then(function () {
-                console.log("Data sent!");
-                $("#jspsych-content").html(debrief);
+      database
+        .ref("MTS_stereo/" + jspsych_id + "/")
+        .update({ dataMTS_measure })
+        .then(function () {
+              console.log("Data sent!");
+              $("#jspsych-content").html(debrief);
+          });
         });
       });
     },
