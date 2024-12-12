@@ -37,26 +37,26 @@
     .context-stimulus {
       font-size: 24px;
       font-weight: bold;
-      position: fixed;
-  	  top: 200px;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     .sample-stimulus {
       font-size: 20px;
-      position: fixed;
-  	  top: 250px;
+      text-align: center;
+      height: 30px; /* Fixed height for the sample to avoid layout shifts */
+      margin-bottom: 40px;
+    }
+
+    .hidden {
+      visibility: hidden; /* Keeps the space while hiding the element */
     }
 
     .choices-container {
       font-size: 24px;
-      position: fixed;
-  	  top: 300px;
+      text-align: center;
+      margin-bottom: 40px;
     }
-
-    .imgInstr {
-      height: 200px; 
-    }
-
   </style>
 </head>
 
@@ -70,9 +70,6 @@
   jspsych_id = jspsych_id == null ? jsPsych.randomization.randomID(15) : jspsych_id; // assign random id if not provided in URL
   var prolificID = jsPsych.data.getURLVariable("PROLIFIC_PID");
   if(prolificID == null) {prolificID = "999";}
-
-// Preload images
-  var preloadimages = ['media/Example_trial.png'];
 
   /* EXPERIMENT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
   /* Fullscreen mode */
@@ -123,7 +120,7 @@
       var html = "";
       html += "<h1>About this study</h1>";
       html += "<p class = 'justify'>In this study, we are interested in how people can learn new information. ";
-      html += "The study consists in a learning phase and a test phase, so please be aware <b>this is an extensive study</b>. Note that it is extremely important that ";
+      html += "The study consists in three learning phase and some test phase, so please be aware <b>this is an extensive study</b>. Note that it is extremely important that ";
       html += "you remain <b>fully concentrated</b> during the entire study.</b></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
@@ -169,7 +166,7 @@
     stimulus: function() {
       var html = "";
       html += "<h1>Learning Task</h1>";
-      html += "<p class = 'justify'>Importantly, <b>information on whether the target trait is <u>positively or negatively related to the correct trait will appear on the screen, followed by the target trait.</u> </b>. <br><br><b>'POSITIVE relation' means that the target trait (e.g., 'anxious') is positively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are more likely to have the other trait too</b>. <br><br>The word <b>'NEGATIVE relation' means that the target trait (e.g., 'anxious') is negatively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are less likely to have the other trait too</b>.<br><br>";
+      html += "<p class = 'justify'>Importantly, the target personality trait will <b>appear on the screen together with information on whether it is <u>positively or negatively related to the correct trait</u>.</b>. <br><br><b>'POSITIVE relation' means that the target trait (e.g., 'anxious') is positively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are more likely to have the other trait too</b>. <br><br>The word <b>'NEGATIVE relation' means that the target trait (e.g., 'anxious') is negatively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are less likely to have the other trait too</b>.<br><br>";
       html += "Importantly, <b>based on what is the correct response AND the whether the relation is positive or negative, <u>you have to remember which traits co-occur or not in people.</u></b> </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
@@ -182,22 +179,8 @@
     choices: [32],
     stimulus: function() {
       var html = "";
-      html += "<h1>Learning Task</h1>";
-      html += "<p class = 'justify'>Below is an example of trial. The relation is presented on the top of the screen, the target trait below and the two response options at the bottom of the screen.</p>";
-      html += "<img class='imgInstr' src='media/Example_trial.png'>";
-      html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
-      return html;
-    },
-  };
-
-  var matchingInstructions_5 = {
-    type: "html-keyboard-response",
-    post_trial_gap: 300,
-    choices: [32],
-    stimulus: function() {
-      var html = "";
       html += "<h1>Learning Task - Part 1</h1>";
-      html += "<p class = 'justify'>The Learning Task is divided into <b>two parts</b>. In Part 1, you will perform a minimum of 8 trials. <br><br>";
+      html += "<p class = 'justify'>The Learning Task is divided into <b>two parts</b>. In Part 1, you will perform 8 trials. <br><br>";
       html += "<b>VERY IMPORTANT: <u>if you make more than 1 mistake on those 8 trials, you will have to do all 8 trials again (and this, until you make no more than 1 mistake on the 8 trials).</u></b> <b>Thus, try to answer as accurately as possible</b>. </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
@@ -281,35 +264,17 @@ var shuffledStimuli = jsPsych.randomization.shuffle(matchingStimuli);
 // Matching Task Trials with Fixed Context Position
 var matchingTrials_loop = [];
 shuffledStimuli.forEach((trialData, trialIndex) => {
-  
-  // Phase 1: Show context
+  // Phase 1: Show context and sample stimulus
   var phase1 = {
     type: "html-keyboard-response",
     stimulus: `
       <div class="trial-container">
         <div class="context-stimulus">${trialData.context}</div>
-      </div>
-    `,
-    choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
-    data: {
-      retryCount: function () {
-        return retryCount; // Include the current retry count
-      },
-    },
-  };
-
-  // Phase 2: Show context and sample stimulus
-  var phase2 = {
-    type: "html-keyboard-response",
-    stimulus: `
-      <div class="trial-container">
-        <div class="context-stimulus">${trialData.context}</div>
         <div class="sample-stimulus">${positionAssignment[trialData.sample]}</div>
       </div>
     `,
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
+    trial_duration: 3000, // Show for 3 seconds
     data: {
       retryCount: function () {
         return retryCount; // Include the current retry count
@@ -317,13 +282,11 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
     },
   };
 
-  // Phase 3: Show choices with the trial counter below
-  var phase3 = {
+  // Phase 2: Show choices with the trial counter below
+  var phase2 = {
     type: "html-button-response",
     stimulus: `
       <div class="trial-container">
-        <div class="context-stimulus">${trialData.context}</div>
-        <div class="sample-stimulus">${positionAssignment[trialData.sample]}</div>
       </div>
     `,
       choices: function () {
@@ -382,11 +345,11 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
     stimulus: function () {
       var lastTrialData = jsPsych.data.getLastTrialData().values()[0];
       return lastTrialData.correct
-        ? "<p style='color: green;font-size: 24px;font-weight: bold;'>Correct!</p>"
-        : "<p style='color: red;font-size: 24px;font-weight: bold;'>Incorrect!</p>";
+        ? "<p style='color: green;'>Correct!</p>"
+        : "<p style='color: red;'>Incorrect!</p>";
     },
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show feedback for 1 second
+    trial_duration: 1000, // Show feedback for 1 second
     data: {
       retryCount: function () {
         return retryCount; // Include the current retry count
@@ -408,7 +371,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
   };
 
   // Add trials to the timeline
-  matchingTrials_loop.push(phase1, phase2, phase3, feedbackTrial, blankScreenTrial);
+  matchingTrials_loop.push(phase1, phase2, feedbackTrial, blankScreenTrial);
 });
 
 // Variable to track retries
@@ -479,32 +442,18 @@ shuffledStimuli_measure.forEach((trialData, trialIndex) => {
     stimulus: `
       <div class="trial-container">
         <div class="context-stimulus">${trialData.context}</div>
-      </div>
-    `,
-    choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
-  };
-
-  // Phase 2: Show context and sample stimulus
-  var phase2 = {
-    type: "html-keyboard-response",
-    stimulus: `
-      <div class="trial-container">
-        <div class="context-stimulus">${trialData.context}</div>
         <div class="sample-stimulus">${positionAssignment[trialData.sample]}</div>
       </div>
     `,
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
+    trial_duration: 3000, // Show for 3 seconds
   };
 
-  // Phase 3: Show choices with the trial counter below
-  var phase3 = {
+  // Phase 2: Show choices with the trial counter below
+  var phase2 = {
     type: "html-button-response",
     stimulus: `
       <div class="trial-container">
-        <div class="context-stimulus">${trialData.context}</div>
-        <div class="sample-stimulus">${positionAssignment[trialData.sample]}</div>
       </div>
     `,
       choices: function () {
@@ -558,7 +507,7 @@ shuffledStimuli_measure.forEach((trialData, trialIndex) => {
   };
 
   // Add trials to the timeline
-  matchingTrials_measure.push(phase1, phase2, phase3, blankScreenTrial);
+  matchingTrials_measure.push(phase1, phase2, blankScreenTrial);
 });
 
 
@@ -811,7 +760,6 @@ var likingGrp = {
                 matchingInstructions_2,
                 matchingInstructions_3,
                 matchingInstructions_4,
-                matchingInstructions_5,
                 matchingLoop, // MTS loop
                 Instr_Quest,
                 likingGrp,
@@ -851,7 +799,6 @@ var likingGrp = {
 
       /* jsPsych: add data to every trial */
       jsPsych.data.addProperties({
-      	preload_images: preloadimages,
         jspsych_id: jspsych_id,
         prolificID: prolificID,
 
