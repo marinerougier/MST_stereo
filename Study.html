@@ -154,9 +154,9 @@
       var html = "";
       html += "<h1>Learning Task</h1>";
       html += "<p class = 'justify'>To learn information about traits, you will perform several trials.<br><br> ";
-      html += "At the start of each trial, <b>a target personality trait will appear on the screen (e.g., the word 'anxious') <u>during 2 seconds</u></b>. Then, the target trait will disappear and <b>two response options (e.g., the traits 'aggressive' and 'truthful') will be displayed.</b> <br><br>";
-      html += "Your task will be to click on one response option. After you make a choice, <b>a message on the screen will tell you whether your choice was 'correct' or 'incorrect'</b>. If the response was 'incorrect', it means that the correct choice was the other one. <br><br>";
-      html += "To be able to accurately perform the task, <b><u>you have to remember what the correct response was for each target trait.</u></b></p>";
+      html += "At the start of each trial, <b>a target personality trait will appear on the screen (e.g., the word 'anxious')</b>. After a few seconds, <b>two response options (e.g., the traits 'aggressive' and 'truthful') will be displayed.</b> <br><br>";
+      html += "You will have to click on one response option. After you make a choice, <b>a message on the screen will tell you whether your choice was 'correct' or 'incorrect'</b>. If the response was 'incorrect', it means that the correct choice was the other one. <br><br>";
+      html += "Your task is to <b><u>respond as accurately as possible</u></b>. To be able to accurately perform the task, <b><u>you have to remember what the correct response was for each target trait.</u></b></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -265,14 +265,14 @@ positions.forEach((position, index) => {
 // Create the stimuli using the assigned traits
 var matchingStimuli = [
   { sample: "A1", context: "POSITIVE relation", choices: ["B1", "B2"], correct: 0 },
-  //{ sample: "A1", context: "NEGATIVE relation", choices: ["B2", "B1"], correct: 0 },
+  { sample: "A1", context: "NEGATIVE relation", choices: ["B2", "B1"], correct: 0 },
   { sample: "B1", context: "POSITIVE relation", choices: ["C1", "C2"], correct: 0 },
-  //{ sample: "B1", context: "NEGATIVE relation", choices: ["C2", "C1"], correct: 0 },
+  { sample: "B1", context: "NEGATIVE relation", choices: ["C2", "C1"], correct: 0 },
 
   { sample: "A2", context: "POSITIVE relation", choices: ["B2", "B1"], correct: 0 },
-  //{ sample: "A2", context: "NEGATIVE relation", choices: ["B1", "B2"], correct: 0 },
+  { sample: "A2", context: "NEGATIVE relation", choices: ["B1", "B2"], correct: 0 },
   { sample: "B2", context: "POSITIVE relation", choices: ["C2", "C1"], correct: 0 },
-  //{ sample: "B2", context: "NEGATIVE relation", choices: ["C1", "C2"], correct: 0 },
+  { sample: "B2", context: "NEGATIVE relation", choices: ["C1", "C2"], correct: 0 },
 ];
 
 // Shuffle the trial order
@@ -291,7 +291,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
       </div>
     `,
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
+    trial_duration: 1500, // Show for 1,5 seconds
     data: {
       retryCount: function () {
         return retryCount; // Include the current retry count
@@ -309,7 +309,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
       </div>
     `,
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
+    trial_duration: 1500, // Show for 1,5 seconds
     data: {
       retryCount: function () {
         return retryCount; // Include the current retry count
@@ -386,7 +386,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
         : "<p style='color: red;font-size: 24px;font-weight: bold;'>Incorrect!</p>";
     },
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show feedback for 1 second
+    trial_duration: 1500, // Show feedback for 1,5 seconds
     data: {
       retryCount: function () {
         return retryCount; // Include the current retry count
@@ -412,7 +412,7 @@ shuffledStimuli.forEach((trialData, trialIndex) => {
 });
 
 // Variable to track retries
-var maxRetries = 2;                                                                  //HERE SHOULD BE 5 !!!
+var maxRetries = 5;                                                                  //HERE SHOULD BE 5 !!!
 var retryCount = 0;
 
 /* Restart Logic */
@@ -423,7 +423,7 @@ var matchingLoop = {
     var currentData = data.filter({ task: "matching-to-sample_loop" });
     var mistakes = currentData.filter({ correct: false }).count();
 
-    if (mistakes > 8) {                                                             //HERE SHOULD BE 1 !!!
+    if (mistakes > 1) {                                                             //HERE SHOULD BE 1 !!!
       retryCount++;
       if (retryCount < maxRetries) {
         return true; // Restart the task
@@ -439,33 +439,33 @@ var matchingLoop = {
   var matchingStimuli_measure = [
     // Mutual entailment
     { sample: "B1", context: "POSITIVE relation", choices: ["A1", "B2"], correct: 0 },
-    //{ sample: "B1", context: "NEGATIVE relation", choices: ["A2", "A1"], correct: 0 },
+    { sample: "B1", context: "NEGATIVE relation", choices: ["A2", "A1"], correct: 0 },
 
     { sample: "B2", context: "NEGATIVE relation", choices: ["A1", "A2"], correct: 0 },
-    //{ sample: "B2", context: "POSITIVE relation", choices: ["A2", "B1"], correct: 0 },
+    { sample: "B2", context: "POSITIVE relation", choices: ["A2", "B1"], correct: 0 },
 
     { sample: "C1", context: "POSITIVE relation", choices: ["B1", "C2"], correct: 0 },
-    //{ sample: "C1", context: "NEGATIVE relation", choices: ["B2", "C2"], correct: 0 },
+    { sample: "C1", context: "NEGATIVE relation", choices: ["B2", "C2"], correct: 0 },
 
     { sample: "C2", context: "POSITIVE relation", choices: ["B2", "C1"], correct: 0 },
-    //{ sample: "C2", context: "NEGATIVE relation", choices: ["B1", "C1"], correct: 0 },
+    { sample: "C2", context: "NEGATIVE relation", choices: ["B1", "C1"], correct: 0 },
 
     // Combinatorial entailment
     { sample: "A1", context: "POSITIVE relation", choices: ["C1", "C2"], correct: 0 },
-    //{ sample: "A1", context: "NEGATIVE relation", choices: ["C2", "C1"], correct: 0 },
-    //{ sample: "A1", context: "NEGATIVE relation", choices: ["A2", "C1"], correct: 0 },
+    { sample: "A1", context: "NEGATIVE relation", choices: ["C2", "C1"], correct: 0 },
+    { sample: "A1", context: "NEGATIVE relation", choices: ["A2", "C1"], correct: 0 },
 
     { sample: "A2", context: "POSITIVE relation", choices: ["C2", "C1"], correct: 0 },
-    //{ sample: "A2", context: "NEGATIVE relation", choices: ["C1", "C2"], correct: 0 },
-    //{ sample: "A2", context: "NEGATIVE relation", choices: ["A1", "C2"], correct: 0 },
+    { sample: "A2", context: "NEGATIVE relation", choices: ["C1", "C2"], correct: 0 },
+    { sample: "A2", context: "NEGATIVE relation", choices: ["A1", "C2"], correct: 0 },
 
     { sample: "C1", context: "NEGATIVE relation", choices: ["C2", "B1"], correct: 0 },
-    //{ sample: "C1", context: "POSITIVE relation", choices: ["A1", "C2"], correct: 0 },
-    //{ sample: "C1", context: "NEGATIVE relation", choices: ["A2", "B1"], correct: 0 },
+    { sample: "C1", context: "POSITIVE relation", choices: ["A1", "C2"], correct: 0 },
+    { sample: "C1", context: "NEGATIVE relation", choices: ["A2", "B1"], correct: 0 },
 
     { sample: "C2", context: "NEGATIVE relation", choices: ["C1", "B2"], correct: 0 },
-    //{ sample: "C2", context: "POSITIVE relation", choices: ["A2", "C1"], correct: 0 },
-    //{ sample: "C2", context: "NEGATIVE relation", choices: ["A1", "B2"], correct: 0 },
+    { sample: "C2", context: "POSITIVE relation", choices: ["A2", "C1"], correct: 0 },
+    { sample: "C2", context: "NEGATIVE relation", choices: ["A1", "B2"], correct: 0 },
   ];
 
 var shuffledStimuli_measure = jsPsych.randomization.shuffle(matchingStimuli_measure);
@@ -482,7 +482,7 @@ shuffledStimuli_measure.forEach((trialData, trialIndex) => {
       </div>
     `,
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
+    trial_duration: 1500, // Show for 1,5 seconds
   };
 
   // Phase 2: Show context and sample stimulus
@@ -495,7 +495,7 @@ shuffledStimuli_measure.forEach((trialData, trialIndex) => {
       </div>
     `,
     choices: jsPsych.NO_KEYS,
-    trial_duration: 1500, // Show for 3 seconds
+    trial_duration: 1500, // Show for 1,5 seconds
   };
 
   // Phase 3: Show choices with the trial counter below
@@ -579,10 +579,10 @@ for (var i = 0; i < traits.length; i++) {
 traitPairs = jsPsych.randomization.shuffle(traitPairs);
 
 // Generate the likert questions for all trait pairs
-var likertPreamble = '<p class="justify">Please indicate to what extent people who have one trait are likely to have the other trait. Here <b>we are interested in your own opinion</b>, that is, we want you to respond based on what you think. ' +
+var likertPreamble = '<p class="justify">Please indicate to what extent people who possess one trait are likely to possess the other trait. Here <b>we are interested in your own opinion</b>, that is, we want you to respond based on what you think. ' +
   '<br><br> Use the scale from 1 = “Not at all” to 7 = “Totally”.</p>';
 
-var likertScale = ["1</br>Not at all", "2", "3", "4", "5", "6", "7</br>Totally"];
+var likertScale = ["1</br>Not at all likely", "2", "3", "4", "5", "6", "7</br>Very likely"];
 
 // Store trait pairs with position data in questions
 var questionsLikingGrp = [];
@@ -590,7 +590,7 @@ traitPairs.map(function(pair) {
   var position1 = Object.keys(positionAssignment).find(pos => positionAssignment[pos] === pair[0]);
   var position2 = Object.keys(positionAssignment).find(pos => positionAssignment[pos] === pair[1]);
 
-  var prompt = `In your opinion, are <b>${pair[0]}</b> people often <b>${pair[1]}</b>?`;
+  var prompt = `In your opinion, how likely are <b>${pair[0]}</b> people to be <b>${pair[1]}</b>?`;
   questionsLikingGrp.push({
     prompt: '<i>' + prompt + '</i>',
     labels: likertScale,
