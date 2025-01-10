@@ -138,8 +138,8 @@
       var html = "";
       html += "<h1>Learning Task</h1>";
       html += "<p class = 'justify'>This task consists in learning new information about <b>personality traits.</b> <br><br> ";
-      html += "<b>Personality traits are generally related in different ways</b>. Some personality traits can be <b><u>positively related</u></b>. For instance, if we consider that the trait 'anxious' and the trait 'truthful' are positively related, this means that an anxious person is <b>more likely</b> to also be truthful than a person not being anxious. Some other traits can be <b><u>negatively related</u></b>. For instance, if we consider that trait 'anxious' and the trait 'truthful' are negatively related, this means that an anxious person is <b>less likely</b> to truthful than a person not being anxious.<br><br>";
-      html += "In this study, <b>we will provide you information about how traits relate to each other. <u>You will have to learn this information and answer as accurately as possible.</u></b></p>";
+      html += "<b>Personality traits are generally related in different ways</b>. Some personality traits can be <b><u>positively related</u></b>. For instance, if we consider that the trait 'anxious' and the trait 'truthful' are positively related, this means that an anxious person is <b>more likely</b> to also be truthful than a person not being anxious. Some other traits can be <b><u>negatively related</u></b>. For instance, if we consider that trait 'anxious' and the trait 'truthful' are negatively related, this means that an anxious person is <b>less likely</b> to be truthful than a person not being anxious.<br><br>";
+      html += "In this study, <b>we will provide you information about how traits relate to each other. <u>You will have to learn this information and provide answers as accurately as possible.</u></b></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -153,7 +153,7 @@
     stimulus: function() {
       var html = "";
       html += "<h1>Learning Task</h1>";
-      html += "<p class = 'justify'>To learn information about traits, you will perform several trials.<br><br> ";
+      html += "<p class = 'justify'>To learn information about traits, you will perform a Learning Task with several trials.<br><br> ";
       html += "At the start of each trial, <b>a target personality trait will appear on the screen (e.g., the word 'anxious')</b>. After a few seconds, <b>two response options (e.g., the traits 'aggressive' and 'truthful') will be displayed.</b> <br><br>";
       html += "You will have to click on one response option. After you make a choice, <b>a message on the screen will tell you whether your choice was 'correct' or 'incorrect'</b>. If the response was 'incorrect', it means that the correct choice was the other one. <br><br>";
       html += "Your task is to <b><u>respond as accurately as possible</u></b>. To be able to accurately perform the task, <b><u>you have to remember what the correct response was for each target trait.</u></b></p>";
@@ -170,7 +170,7 @@
       var html = "";
       html += "<h1>Learning Task</h1>";
       html += "<p class = 'justify'>Importantly, <b>information on whether the target trait is <u>positively or negatively related to the correct trait will first appear on the screen, followed by the target trait.</u> </b> <br><br><b>'POSITIVE relation' means that the target trait (e.g., 'anxious') is positively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are more likely to have the other trait too</b>. <br><br><b>'NEGATIVE relation' means that the target trait (e.g., 'anxious') is negatively related to the correct response </b>(e.g., the word 'truthful'), that is, <b>people who have the target trait are less likely to have the other trait too</b>.<br><br>";
-      html += "Importantly, <b>based on what is the correct response AND the whether the relation is positive or negative, <u>you have to remember which traits co-occur or not in people.</u></b> </p>";
+      html += "Importantly, <b>based on what is the correct response AND whether the relation is positive or negative, <u>you have to remember which traits co-occur or not in people.</u></b> </p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -242,7 +242,7 @@
     choices: [32],
     stimulus: function() {
       var html = "";
-      html += "<p class = 'justify'>Now we will ask you a few more questions Again, please answer <b>as honestly and as spontaneously as possible.</b><br></p>";
+      html += "<p class = 'justify'>Now we will ask you a few more questions. Again, please answer <b>as honestly and as spontaneously as possible.</b><br></p>";
       html += "<p></br>Press <span class='light-keys'><kbd>space</kbd></span> to continue</p>";
       return html;
     },
@@ -651,7 +651,7 @@ var likingGrp = {
   // Influence awareness
   var influence_awareness = {
       type: 'survey-multi-choice',
-      questions: [{prompt: "Do you think that the Learning Task influenced your responses in the questionnaire (when you had to indicate the extent to which people who have one trait are likely to have another trait)?", options: ['Yes', 'No', 'I do not know'], required: true}],
+      questions: [{prompt: "Do you think that Part 1 of the Learning Task influenced your responses in the questionnaire (when you had to indicate the extent to which people who have one trait are likely to have another trait)?", options: ['Yes', 'No', 'I do not know'], required: true}],
       button_label: "Continue",
       on_load: function() {
           window.scrollTo(0, 0);
